@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+out/
+experiments/logs/
+experiments/results_bok/frames/
+experiments/results_bok/event_frames/
+experiments/results_bok/cands/
+experiments/results_res/qual/
+experiments/**/*.part
+experiments/**/*.state.pt
+*.tmp.npz
+.DS_Store

@@ -1,0 +1,79 @@
+{
+ "episodes": 500,
+ "student_runs": 2500,
+ "student_fail_runs": 603,
+ "fail_inactive": 54,
+ "fail_inactive_pct": 9.0,
+ "fail_active_pct": 91.0,
+ "base_never": 63,
+ "student_on_base_never_pct": 36.5,
+ "base_always": 199,
+ "student_on_base_always_pct": 95.1,
+ "episodes_improved_ge04": 89,
+ "episodes_worsened_ge04": 24,
+ "fails_on_base_never_pct": 33.2,
+ "steps_success_student": 278.0,
+ "steps_success_base": 290.0,
+ "per_task": [
+  {
+   "task": "Soup and sauce in basket",
+   "base": 78.0,
+   "replan": 82.8,
+   "student": 84.4
+  },
+  {
+   "task": "Cheese and butter in basket",
+   "base": 90.3,
+   "replan": 92.4,
+   "student": 92.8
+  },
+  {
+   "task": "Stove on, moka pot on stove",
+   "base": 71.4,
+   "replan": 70.8,
+   "student": 80.4
+  },
+  {
+   "task": "Bowl in drawer, close drawer",
+   "base": 66.9,
+   "replan": 63.6,
+   "student": 80.0
+  },
+  {
+   "task": "Two mugs on plates",
+   "base": 62.3,
+   "replan": 59.6,
+   "student": 72.4
+  },
+  {
+   "task": "Book in caddy",
+   "base": 52.3,
+   "replan": 51.6,
+   "student": 54.0
+  },
+  {
+   "task": "Mug on plate, pudding right",
+   "base": 46.9,
+   "replan": 54.4,
+   "student": 71.6
+  },
+  {
+   "task": "Soup and cheese in basket",
+   "base": 74.0,
+   "replan": 80.0,
+   "student": 92.8
+  },
+  {
+   "task": "Two moka pots on stove",
+   "base": 45.1,
+   "replan": 51.2,
+   "student": 64.4
+  },
+  {
+   "task": "Mug in microwave, close door",
+   "base": 59.4,
+   "replan": 65.6,
+   "student": 66.0
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+title: "When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance Recovery in Vision-Language-Action Policies"
+authors:
+  - family-names: Ji
+    given-names: Chang-Hoon
+    affiliation: Korea University
+  - family-names: Kam
+    given-names: Tae-Eui
+    affiliation: Korea University
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance Recovery in Vision-Language-Action Policies"
+  authors:
+    - family-names: Ji
+      given-names: Chang-Hoon
+    - family-names: Kam
+      given-names: Tae-Eui
+  conference:
+    name: "International Conference on Electronics, Information, and Communication (ICEIC)"
+  year: 2027
