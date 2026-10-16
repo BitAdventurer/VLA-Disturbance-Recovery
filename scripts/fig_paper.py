@@ -269,6 +269,19 @@ Ddet, _ = load([RD("det_n2h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0", "ns3_
 extra["detshift_vs_shift_heldout"] = paired(Dpd, Dsc, HO)
 extra["detshift_vs_det_heldout"] = paired(Dpd, Ddet, HO)
 extra["detshift_vs_det"] = paired(Dpd, Ddet)
+# chain7 (2026-10-16): three draws of the privileged replan + shift arm, and the teacher WITH the detector replan
+Dpd3, _ = load([RR("probe_det_s05_k2"), RR("probe_det_s05_k2_ns1"), RR("probe_det_s05_k2_ns2")])
+Dtd, _ = load([RR("eval_res_v4_it039_det"), RR("eval_res_v4_it039_det_ns1"), RR("eval_res_v4_it039_det_ns2")])
+if len(Dpd3) == 3 and len(Dtd) == 3:
+    extra["detshift3"] = paired(Dpd3, pool)
+    extra["detshift3_heldout"] = paired(Dpd3, pool, HO)
+    extra["detshift3_vs_shift_heldout"] = paired(Dpd3, Dsc, HO)
+    extra["detshift3_vs_det_heldout"] = paired(Dpd3, Ddet, HO)
+    extra["detshift3_vs_det"] = paired(Dpd3, Ddet)
+    extra["teacher_det_heldout"] = paired(Dtd, pool, HO)
+    extra["teacher_det_vs_teacher_heldout"] = paired(Dtd, Dt, HO)
+    extra["student_vs_teacher_det_heldout"] = paired(Ds, Dtd, HO)
+    extra["teacher_det_vs_detshift3_heldout"] = paired(Dtd, Dpd3, HO)
 # undisturbed, det only + teacher none vs cal_none heldout
 Dnone, _ = load([RD("cal_none_s0")])
 numbers["undisturbed_base"] = round(100 * float(np.mean([r["success"] for r in Dnone[0].values()])), 1)

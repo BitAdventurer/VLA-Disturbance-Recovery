@@ -176,6 +176,7 @@ of running them unchanged. Where each result comes from:
 | Displacement regressor, fixed-rule shift | `run_dispdata.sh`, `run_chain_vision.sh` |
 | Teacher, student, undisturbed episodes | `run_chain3_teacher4.sh` |
 | Larger and other disturbances, ablations, extra draws | `run_chain4_general.sh`, `run_chain5_nodhat_big.sh`, `run_chain6_draws.sh` |
+| Detector replan with the scripted shift (three draws), teacher with the detector replan (Sec. V-C) | `run_chain7_reviewcheck.sh` |
 | Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py` |
 
 ## Citation
