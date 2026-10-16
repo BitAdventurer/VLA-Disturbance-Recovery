@@ -24,7 +24,7 @@ estimate.
 
 ## Results
 
-π0.5 on LIBERO-10, 4–6 cm object displacement on approach, (n, h) = (2, 10). All 500 disturbed episodes
+π0.5 on LIBERO-10, 4–6 cm object displacement (mostly as the gripper approaches), (n, h) = (2, 10). All 500 disturbed episodes
 (10 tasks × 50 initial states; half of them use the initial states the modules were trained on). Gains are paired
 against the seven-draw mean of the base policy on the same episodes, with task-stratified bootstrap 95% intervals.
 
@@ -32,22 +32,27 @@ against the seven-draw mean of the base policy on the same episodes, with task-s
 |---|:-:|:-:|:-:|:-:|:-:|
 | π0.5 alone | – | 7 | 64.7 | – | 95.4 |
 | Detector → replan | V | 5 | 67.2 | +2.5 [+0.6, +4.5] | 95.2 |
-| Detector → replan, then n = 10 | V | 3 | 67.9 | +3.3 [+1.1, +5.5] | – |
-| Scripted shift 0.5 d | P | 1 | 72.2 | +7.5 [+4.2, +10.9] | 95.2* |
-| Fixed-rule shift 0.5 d̂ | V | 3 | 71.2 | +6.5 [+3.7, +9.4] | 95.4 |
-| Residual teacher (BC + PPO)* | P | 5 | 75.1 | +12.9 [+9.3, +16.6] | 94.8 |
-| Student without d̂ | V | 2 | 74.5 | +9.8 [+7.0, +12.7] | 95.4 |
-| **Residual student** | V | 5 | **75.9** | **+11.2 [+8.5, +14.0]** | 95.4 |
+| Detector → replan, then n = 10 | V | 3 | 67.9 | +3.3 [+1.0, +5.5] | – |
+| Scripted shift 0.5 d | P | 3 | 70.9 | +6.3 [+3.9, +8.7] | 90.8 |
+| Fixed-rule shift 0.5 d̂ | V | 3 | 71.2 | +6.5 [+3.7, +9.3] | 95.4 |
+| Residual teacher (BC + PPO) | P | 5 | 77.4 | +12.7 [+10.1, +15.3] | 95.2 |
+| Student without d̂ | V | 2 | 74.5 | +9.8 [+6.9, +12.7] | 95.4 |
+| **Residual student** | V | 5 | **75.9** | **+11.2 [+8.5, +13.9]** | 95.4 |
 
-V: camera frames and proprioception; P: privileged simulator state. *Held-out initial states only
-(250 episodes; base 62.2%, undisturbed 95.2%). On the 250 held-out episodes the student reaches 71.8%
-(+9.6 [+5.8, +13.4]); on displacements twice as large (8–12 cm) it gains +6.5 points.
+V: camera frames and proprioception; P: privileged simulator state. Success is the mean over draws. The scripted
+shift and the teacher act at scheduled queries (no replan at the event); the V rows replan at each detection.
+On the 250 held-out episodes the student reaches 71.8% (+9.6 [+5.8, +13.4]); on displacements twice as large (8–12 cm, all 500
+episodes) it gains +8.3 [+5.0, +11.5]. Three distillation seeds give 75.9–76.8% (mean 76.4%) on all 500 episodes.
 
 <p align="center"><img src="assets/forest.png" width="560" alt="Gains over the base policy on the 250 held-out episodes"></p>
 
-Inference-time levers (replanning more often, more integration steps, best-of-8 chunk selection) recover little or
-none of the loss; replanning helps only when timed at the event; the learned residual gains the most. Every number
-above and in the paper is recomputed from the result files in this repository (see below).
+Simple inference-time levers (replanning more often, more integration steps, best-of-8 chunk selection) recover
+little; replanning helps only when timed at the event; the learned residual gains the most, also against a
+fixed-rule shift tuned on the training initial states. Every success rate and interval in the paper's text, Table II
+and Figs. 2–3 is recomputed from the result files in this repository (see below). The few remaining numbers come
+from the files next to the modules (`experiments/bok/*.json`, `experiments/ckpt/*.log.jsonl`,
+`experiments/latency.json`) and from `paper_outputs/calib_signals.txt`; Table I comes from separate tracking runs
+analysed with `scripts/diag_grasp.py`.
 
 <p align="center"><img src="assets/qual.png" width="760" alt="One held-out episode: base policy (timeout) and residual student (success)"></p>
 
@@ -55,14 +60,17 @@ above and in the paper is recomputed from the result files in this repository (s
 
 ```
 experiments/            rollout runner, policy servers, residual RL and distillation (run from this folder)
-  bok/                  trained detector and displacement regressor (TorchScript), thresholds, best-of-K files
-  ckpt/                 residual teacher (PPO iteration 39), students with and without d̂, training logs
+  bok/                  trained detector and displacement regressor (TorchScript), thresholds, best-of-K files,
+                        pre-registration of the extension runs (prereg_ext.md) and its selection records
+  ckpt/                 residual teacher (PPO iteration 39), students with and without d̂ (three distillation
+                        seeds; seed 0 is the released one), training logs
   results_dist/         per-episode results: base policy, replan schedules, detector
   results_res/          per-episode results: scripted shift, fixed-rule shift, teacher, students
   results_bok/          per-episode results: best-of-8 chunk selection
+  results/              undisturbed static (n, h) grid, three runs each
   latency.json          per-query latency of π0.5 measured on an RTX 5090
 scripts/                training, analysis and figure scripts, and the run scripts used for the paper
-paper_outputs/          numbers, analysis and per-task table exactly as used in the paper
+paper_outputs/          numbers, analysis, per-task table and hand-crafted signal AUROCs as used in the paper
 env.sh                  paths, caches and Python environments (sourced by every run script)
 ```
 
@@ -160,14 +168,17 @@ $LIBERO_PY $VLA_SCRIPTS/train_dispreg2.py export bok/dispreg_v2.pt.state.pt bok/
 # 3. privileged teacher: behavior cloning from the scripted shift 0.5 d, then 40 PPO iterations
 $LIBERO_PY residual_rl.py --out ckpt/res_v4.pt --ports 8000,8001 --workers_per_port 6 --gate jump --iters 40 \
     --episodes 120 --batch_episodes 6 --critic_warmup 1 --bc_script 0.5,2 --bc_episodes 500 --save_every 10
-# 4. vision-only student: DAgger with beta = 1, 0.5, 0 (add --no_dhat for the ablation without d̂)
+# 4. vision-only student: DAgger with beta = 1, 0.5, 0 (--no_dhat: ablation without d̂; --seed S: another
+#    distillation seed, 0 = the released student)
 $LIBERO_PY student_distill.py --teacher ckpt/res_v4.pt.it039 --dispreg bok/dispreg_v2_t24.pt $DET --gate jump \
     --ports 8000,8001 --workers_per_port 6 --reps 2 --out ckpt/student_v2.pt
 ```
 
-The `scripts/run_*.sh` files are the exact run records behind the paper. They wait on one another through log
-markers (for example, `run_chain3_teacher4.sh` waits for `CHAIN2_COMPLETE`), so copy the commands you need instead
-of running them unchanged. Where each result comes from:
+The `scripts/run_*.sh` files are the run records behind most results; the detector-replan, oracle-timing, undisturbed
+and sliding baselines were started by hand with the commands above (`--schedule react_now` / `react_next`,
+`--disturb none`, `--disturb drift`). The scripts wait on one another through log markers (for example,
+`run_chain3_teacher4.sh` waits for `CHAIN2_COMPLETE`), so copy the commands you need instead of running them
+unchanged. Where each result comes from:
 
 | Result | Script |
 |---|---|
@@ -177,6 +188,8 @@ of running them unchanged. Where each result comes from:
 | Teacher, student, undisturbed episodes | `run_chain3_teacher4.sh` |
 | Larger and other disturbances, ablations, extra draws | `run_chain4_general.sh`, `run_chain5_nodhat_big.sh`, `run_chain6_draws.sh` |
 | Detector replan with the scripted shift (three draws), teacher with the detector replan (Sec. V-C) | `run_chain7_reviewcheck.sh` |
+| Scripted shift and its α sweep | `run_probe.sh` |
+| Table II on all 500 episodes, longer fixed-rule windows, extra draws, distillation seeds, openpi's (10, 5) (pre-registered in `experiments/bok/prereg_ext.md`) | `run_chain8_extension.sh`, `run_chain8b_b6.sh`, `run_chain8c_b2s2.sh` |
 | Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py` |
 
 ## Citation

@@ -28,7 +28,8 @@ def collect(pool, args, teacher_sd, student_sd, beta, rnd, rng):
     by = {}
     for j, (tid, init) in enumerate(pairs):
         disturb = "none" if rng.random() < args.p_none else "object"
-        by.setdefault(tid, []).append({"key": (RR.TRAIN_STREAM + 2, rnd * 1000 + j, tid, init), "init": init, "disturb": disturb})
+        # seed 0 keeps the original keys (student_v2); other seeds draw disjoint DAgger episodes
+        by.setdefault(tid, []).append({"key": (RR.TRAIN_STREAM + 2, args.seed * 100000 + rnd * 1000 + j, tid, init), "init": init, "disturb": disturb})
     batches = []
     for tid, eps in by.items():
         for s in range(0, len(eps), args.batch_episodes):
@@ -90,13 +91,14 @@ def main():
     p.add_argument("--drift_steps", type=int, default=60)
     p.add_argument("--push_steps", type=int, default=5)
     p.add_argument("--mock", action="store_true")
+    p.add_argument("--seed", type=int, default=0, help="training seed (network init, shuffling, DAgger episodes); 0 = student_v2")
     a = p.parse_args()
     base = R.build_parser().parse_args([])
     for k, v in vars(a).items():
         setattr(base, k, v)
     base.disturb = "object"
-    torch.manual_seed(0)
-    rng = np.random.default_rng(0)
+    torch.manual_seed(a.seed)
+    rng = np.random.default_rng(a.seed)
     teacher_sd = torch.load(a.teacher, map_location="cpu")["model"]
     student = RR.StudentNet()
     pool = RR.make_pool(base)
