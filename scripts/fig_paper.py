@@ -262,6 +262,13 @@ extra["big_student_vs_vision"] = paired(Dbs, Dbv)
 Drn, _ = load([RD("obj_react_now_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")])
 Drx, _ = load([RD("obj_react_next_n10h10_s0"), RD("obj_react_next_n10h10_ns1_s0")])
 extra["react_now10_vs_next_heldout"] = paired(Drn, Drx, HO)
+# 2x2 with privileged d (Sec. V-C): detector replan + scripted shift vs the shift alone at scheduled queries
+# (no event replan) and vs the detector replan alone, same episodes
+Dpd, _ = load([RR("probe_det_s05_k2")])
+Ddet, _ = load([RD("det_n2h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0", "ns3_s0", "ns4_s0")])
+extra["detshift_vs_shift_heldout"] = paired(Dpd, Dsc, HO)
+extra["detshift_vs_det_heldout"] = paired(Dpd, Ddet, HO)
+extra["detshift_vs_det"] = paired(Dpd, Ddet)
 # undisturbed, det only + teacher none vs cal_none heldout
 Dnone, _ = load([RD("cal_none_s0")])
 numbers["undisturbed_base"] = round(100 * float(np.mean([r["success"] for r in Dnone[0].values()])), 1)
