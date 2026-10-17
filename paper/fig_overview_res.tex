@@ -1,0 +1,149 @@
+% =====================================================================
+% fig_overview_res.tex -- Fig. 1 of the residual-recovery paper (TikZ).
+% Requires in the preamble:
+%   \usepackage{tikz}
+%   \usetikzlibrary{arrows.meta,decorations.pathreplacing,calc,positioning}
+% =====================================================================
+\begin{figure*}[t]
+\centering
+\definecolor{cexec}{RGB}{0,114,178}
+\definecolor{cevent}{RGB}{213,94,0}
+\definecolor{ctrig}{RGB}{230,159,0}
+\definecolor{cres}{RGB}{0,158,115}
+\definecolor{cvla}{RGB}{86,180,233}
+\definecolor{creg}{RGB}{204,121,167}
+\resizebox{0.97\textwidth}{!}{%
+\begin{tikzpicture}[
+  >={Stealth[length=4pt,width=3pt]},
+  font=\footnotesize,
+  cell/.style={draw=black!55, line width=0.3pt, minimum width=0.30cm,
+               minimum height=0.30cm, inner sep=0pt, outer sep=0pt},
+  exe/.style={cell, fill=cexec!55},
+  old/.style={cell, fill=cexec!18,
+    path picture={\draw[black!45, line width=0.3pt]
+      (path picture bounding box.south west) --
+      (path picture bounding box.north east);}},
+  cor/.style={cell, fill=cres!45},
+  qry/.style={draw=ctrig!70!black, fill=ctrig!60, line width=0.3pt,
+              rounded corners=1pt, minimum height=0.26cm, minimum width=0.16cm,
+              inner sep=0pt},
+  box/.style={draw=black!60, line width=0.4pt, rounded corners=2pt,
+              align=center, inner sep=2.5pt, font=\footnotesize},
+  lbl/.style={font=\footnotesize},
+  flow/.style={->, line width=0.5pt}
+]
+
+% ------------------------------------------------------------------
+% Panel (a): three reactions to a displacement inside a chunk
+% ------------------------------------------------------------------
+\def\w{0.30}      % cm per control step
+\def\xo{2.55}     % x of the first action of chunk i
+\def\td{4}        % displacement happens after action 4 of chunk i
+
+% row (i): scheduled replanning (baseline)
+\def\yA{0}
+\node[lbl, anchor=east, align=right] at (\xo-0.1,\yA)
+  {(i) scheduled replan\\[-1pt] (baseline)};
+\foreach \t in {0,...,3} \node[exe] at ({\xo+(\t+0.5)*\w},\yA) {};
+\foreach \t in {4,...,9} \node[old] at ({\xo+(\t+0.5)*\w},\yA) {};
+\node[qry] at ({\xo+10*\w},\yA) {};
+\foreach \t in {10,...,16} \node[exe] at ({\xo+(\t+0.5)*\w},\yA) {};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yA) {stale chunk runs out};
+
+% row (ii): event-triggered replanning
+\def\yB{-0.62}
+\node[lbl, anchor=east, align=right] at (\xo-0.1,\yB)
+  {(ii) replan at the\\[-1pt] event (detector)};
+\foreach \t in {0,...,3} \node[exe] at ({\xo+(\t+0.5)*\w},\yB) {};
+\node[old] at ({\xo+4.5*\w},\yB) {};
+\node[qry] at ({\xo+5*\w},\yB) {};
+\foreach \t in {5,...,16} \node[exe] at ({\xo+(\t+0.5)*\w},\yB) {};
+\node[qry] at ({\xo+15*\w},\yB) {};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yB) {$+2.8$ pts, $1.00\times$ cost};
+
+% row (iii): event-triggered replanning + residual correction
+\def\yC{-1.24}
+\node[lbl, anchor=east, align=right] at (\xo-0.1,\yC)
+  {(iii) + residual\\[-1pt] correction};
+\foreach \t in {0,...,3} \node[exe] at ({\xo+(\t+0.5)*\w},\yC) {};
+\node[old] at ({\xo+4.5*\w},\yC) {};
+\node[qry] at ({\xo+5*\w},\yC) {};
+\foreach \t in {5,...,16} \node[cor] at ({\xo+(\t+0.5)*\w},\yC) {};
+\node[qry] at ({\xo+15*\w},\yC) {};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yC) {$+9.6$ pts, vision only};
+
+% displacement marker
+\draw[cevent, line width=0.6pt] ({\xo+\td*\w},\yA+0.25) -- ({\xo+\td*\w},\yC-0.25);
+\node[lbl, cevent, above] at ({\xo+\td*\w},\yA+0.24) {object displaced 4--6\,cm};
+\draw[decorate, decoration={brace, amplitude=2.5pt, mirror}, line width=0.4pt, cres!80!black]
+  ({\xo+5*\w},\yC-0.22) -- node[lbl, below=1.5pt, cres!80!black]
+  {$a_t\leftarrow a_t+\Delta$ for the next 6 queries} ({\xo+17*\w},\yC-0.22);
+
+% time axis
+\def\yT{-2.05}
+\draw[->, line width=0.4pt] (\xo,\yT) -- ({\xo+17*\w+0.3},\yT);
+\foreach \t in {0,5,10,15} {
+  \draw[line width=0.3pt] ({\xo+\t*\w},\yT) -- ({\xo+\t*\w},\yT-0.06);
+  \node[lbl, below] at ({\xo+\t*\w},\yT-0.03) {\t};}
+\node[lbl, anchor=west] at ({\xo+17*\w+0.35},\yT) {control step};
+
+% legend
+\node[exe] at (0.35,-2.62) {};  \node[lbl, anchor=west] at (0.55,-2.62) {executed action};
+\node[old] at (2.75,-2.62) {};  \node[lbl, anchor=west] at (2.95,-2.62) {planned before the event};
+\node[cor] at (6.45,-2.62) {};  \node[lbl, anchor=west] at (6.65,-2.62) {corrected};
+\node[qry, minimum width=0.16cm] at (8.15,-2.62) {}; \node[lbl, anchor=west] at (8.35,-2.62) {policy query};
+
+\node[font=\footnotesize] at (4.6,-3.1)
+  {(a) Reactions to a displacement inside a chunk ($H{=}h{=}10$)};
+
+% ------------------------------------------------------------------
+% Panel (b): vision-only pipeline and its training
+% ------------------------------------------------------------------
+\def\xb{11.0}
+
+\node[box, fill=ctrig!15, draw=ctrig!70!black, minimum width=1.9cm] (det) at (\xb+1.7,0.05)
+  {disturbance detector\\ CNN, every step};
+\node[box, fill=cvla!15, draw=cvla!70!black, minimum width=1.9cm] (vla) at (\xb+5.9,0.05)
+  {$\pi_{0.5}$ policy\\ query $\rightarrow$ chunk $\mathbf{A}$};
+\node[box, fill=creg!15, draw=creg!70!black, minimum width=1.9cm] (reg) at (\xb+1.7,-1.25)
+  {displacement regressor\\ CNN on the event frames};
+\node[box, fill=cres!15, draw=cres!70!black, minimum width=1.9cm] (res) at (\xb+5.9,-1.25)
+  {residual MLP\\ $\Delta=\mathbf{s}\odot\tanh u(x)$};
+\node[circle, draw=black!60, line width=0.4pt, inner sep=0pt, minimum size=0.26cm, font=\scriptsize] (sum)
+  at (\xb+7.75,-0.6) {$+$};
+\node[box, fill=black!5, minimum height=1.9cm, minimum width=0.5cm, inner sep=1pt] (rob) at (\xb+8.45,-0.6)
+  {\rotatebox{90}{robot}};
+
+\node[lbl, align=center] (obsin) at (\xb+1.7,0.92) {frames $o_{t-1},o_t$ (2 cameras), $a_{t-1}$, end-effector motion};
+\node[lbl] (vlain) at (\xb+5.9,0.92) {$o_t,\ell$};
+\draw[flow] (obsin.south) -- (det.north);
+\draw[flow] (vlain.south) -- (vla.north);
+\draw[flow] (det) -- node[lbl, above, inner sep=1pt] {replan} (vla);
+\draw[flow] (det) -- node[lbl, right] {event frames} (reg);
+\draw[flow] (reg) -- node[lbl, above] {$\hat d$} (res);
+\draw[flow] (vla.east) -| (sum.north);
+\draw[flow] (res.east) -| (sum.south);
+\draw[flow] (sum) -- (rob);
+\node[lbl, anchor=north, align=center] at (\xb+4.35,-1.7)
+  {$x$: proprio, chunk statistics, $\hat d$, queries since the event, task};
+
+% training strip
+\node[box, fill=white, inner sep=1.5pt, align=left] (train)
+  at (\xb+4.35,-2.5)
+  {training in simulation: scripted shift $0.5\,d$ $\rightarrow$ BC $\rightarrow$ PPO teacher (privileged $d$)\\[-1pt]
+   $\rightarrow$ DAgger ($\beta=1,0.5,0$) $\rightarrow$ vision-only student; detector, regressor: supervised};
+
+\node[font=\footnotesize] at (\xb+4.35,-3.1) {(b) Deployable system: when to replan, how much to correct};
+
+\end{tikzpicture}%
+}
+\caption{Overview. (a) A chunked policy that is queried every $h$ actions
+cannot react to a displacement until the current chunk is spent (i).
+A learned detector interrupts the chunk and replans at the event (ii, drawn
+with one step of detection latency), and a residual policy adds a small correction $\Delta$ to every action of the
+following queries (iii). (b) All three learned modules use only camera
+frames, actions, proprioception and the task, and are trained around the policy; the
+$\pi_{0.5}$ weights are not updated (symbols: Section~\ref{sec:method}). Gains: 250 held-out episodes over the
+seven-draw mean of the base policy (Fig.~\ref{fig:forest}).}
+\label{fig:overview}
+\end{figure*}

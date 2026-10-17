@@ -10,3 +10,12 @@ experiments/**/*.part
 experiments/**/*.state.pt
 *.tmp.npz
 .DS_Store
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.fls
+paper/*.fdb_latexmk
+paper/*.out
+paper/main_iceic_residual.pdf
+paper/main_preprint.pdf

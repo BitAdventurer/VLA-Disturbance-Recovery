@@ -1,6 +1,7 @@
 # When to Replan and How Much to Correct
 
 Code, trained modules and per-episode results for our paper submitted to ICEIC 2027
+([preprint PDF](paper/ji2027replan.pdf), [LaTeX source](paper/)).
 
 > **When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance Recovery in Vision-Language-Action Policies**<br>
 > Chang-Hoon Ji and Tae-Eui Kam, Korea University
@@ -71,6 +72,7 @@ experiments/            rollout runner, policy servers, residual RL and distilla
   latency.json          per-query latency of π0.5 measured on an RTX 5090
 scripts/                training, analysis and figure scripts, and the run scripts used for the paper
 paper_outputs/          numbers, analysis, per-task table and hand-crafted signal AUROCs as used in the paper
+paper/                  LaTeX source and preprint PDF of the paper (see paper/README.md)
 env.sh                  paths, caches and Python environments (sourced by every run script)
 ```
 
@@ -205,6 +207,7 @@ unchanged. Where each result comes from:
 
 ## License
 
-Code is released under the MIT License. π0.5 and openpi are subject to their own licenses
+Code is released under the MIT License. The paper (the files in `paper/` and the copies of its figures in
+`assets/`) is not covered by it; see [paper/README.md](paper/README.md). π0.5 and openpi are subject to their own licenses
 ([openpi](https://github.com/Physical-Intelligence/openpi)); LIBERO is subject to its license
 ([LIBERO](https://github.com/Lifelong-Robot-Learning/LIBERO)).
