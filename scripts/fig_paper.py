@@ -106,11 +106,11 @@ arms = [
     ("det_2", "detector $\\rightarrow$ replan, $(2,10)$", [RD("det_n2h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0", "ns3_s0", "ns4_s0")], "timing", False),
     ("det_10", "detector $\\rightarrow$ replan, then $n{=}10$", [RD("det_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
     ("scripted", "scripted shift $0.5\\,d$ (priv.)", [RR("probe_s05_k2")] + [(RR("probe_s05_k2_ns%d" % s), RR("probe_s05_k2_tr_ns%d" % s)) for s in (1, 2)], "residual", False),
-    ("vision_scripted", "fixed-rule shift $0.5\\,\\hat d$", [RR("vision_s05_k2"), RR("vision_s05_k2_ns1"), RR("vision_s05_k2_ns2")], "residual", False),
+    ("vision_scripted", "fixed-rule shift $0.5\\,\\widehat{d}$", [RR("vision_s05_k2"), RR("vision_s05_k2_ns1"), RR("vision_s05_k2_ns2")], "residual", False),
     ("teacher_bc", "teacher: BC only (priv.)", [RR("eval_res_v4_bc")], "residual", True),
     ("teacher_scratch", "teacher: PPO from scratch (priv.)", [RR("abl_scratch_it039"), RR("abl_scratch_it039_ns1")], "residual", True),
     ("teacher", "teacher: BC + PPO (priv.)", TEACHER_DRAWS, "residual", False),
-    ("student_nodhat", "student without $\\hat d$", [RR("abl_student_nodhat"), RR("abl_student_nodhat_ns1")], "residual", True),
+    ("student_nodhat", "student without $\\widehat{d}$", [RR("abl_student_nodhat"), RR("abl_student_nodhat_ns1")], "residual", True),
     ("student", "residual student (vision)", [RR("student_v2"), RR("student_v2_ns1"), RR("student_v2_ns2"), RR("student_v2_ns3"), RR("student_v2_ns4")], "residual", False),
 ]
 forest = {}
@@ -128,7 +128,7 @@ numbers["forest"] = forest
 col = {"lever": GREY, "timing": ORANGE, "residual": GREEN}
 names = {"lever": "Inference levers", "timing": "Replan timing", "residual": "Residual recovery"}
 rows = [a for a in arms if a[0] in forest]
-fig, ax = plt.subplots(figsize=(3.45, 3.0))
+fig, ax = plt.subplots(figsize=(3.45, 2.85))
 ytick, ylab, header_rows = [], [], []
 y = 0
 last_grp = None
@@ -138,6 +138,7 @@ for key, lab, paths, grp, hollow in rows:
             y += 0.35
         ytick.append(y); ylab.append(names[grp]); header_rows.append((len(ytick) - 1, grp)); y += 1
     last_grp = grp
+    y += 0.3 * ("widehat" in lab)     # room for the hat of d-hat below the row above
     r = forest[key]["heldout"]
     m, lo, hi = r["delta"], r["lo"], r["hi"]
     ax.errorbar(m, y, xerr=[[m - lo], [hi - m]], fmt="o", ms=3.0, color=col[grp], mfc="white" if hollow else col[grp],
@@ -445,6 +446,45 @@ _tv3, _ = load([RR("eval_res_v3_it059_none")])   # teacher v3 with the cumulativ
 if _tv3:
     extra["teacher_cumgate_undisturbed_heldout"] = paired(_tv3, Dnone, HO)
 extra["detector_auroc_heldout"] = round(json.load(open(E + "/bok/detector_v1.pt.json"))["auroc"], 4)
+# ---- 2026-10-17 quality revision -----------------------------------------------------------------------------
+# held-out student vs the fixed-rule shift 0.5 d-hat (contribution 3 and Sec. V-C lead with held-out numbers)
+extra["student_vs_vision_scripted_heldout"] = paired(Ds, Dv, HO)
+# trigger of each episode's displacement, by majority over the seven base draws: approach (gripper within 12 cm)
+# or time fallback (applied at the planned step); gains split by it on the held-out episodes (Sec. V-F)
+_trig = {}
+for k in pool[0]:
+    _ev = [d[k]["disturbance"] for d in pool if (d[k].get("disturbance") or {}).get("applied_t") is not None]
+    _trig[k] = "fallback" if 2 * sum(e["applied_t"] == e["planned_t"] for e in _ev) > len(_ev) else "approach"
+_APP = lambda k: _trig.get(k) == "approach"
+_FB = lambda k: _trig.get(k) == "fallback"
+extra["trigger_counts"] = dict(all_approach=sum(map(_APP, pool[0])), all_fallback=sum(map(_FB, pool[0])),
+                               heldout_approach=sum(1 for k in pool[0] if HO(k) and _APP(k)),
+                               heldout_fallback=sum(1 for k in pool[0] if HO(k) and _FB(k)))
+extra["trigger_split_heldout"] = {
+    name: dict(approach=paired(D, pool, lambda k: HO(k) and _APP(k)), fallback=paired(D, pool, lambda k: HO(k) and _FB(k)))
+    for name, D in (("student", Ds), ("teacher", Dt), ("fixed_rule", Dv), ("detector_replan", Ddet))}
+# policy-query cost of the detector replan (Sec. IV-A): query time per episode summed from the measured per-query
+# latency (cost_ms), relative to the base pool on the same 500 episodes; detections per disturbed episode; queries
+# per 100 control steps; mean episode length
+Ddet10, _ = load([RD("det_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")])
+_ks = sorted(pool[0])
+def _qcost(D):
+    m = lambda f: float(np.mean([np.mean([f(d[k]) for d in D]) for k in _ks]))
+    return dict(cost_ms=round(m(lambda r: r["cost_ms"]), 1), queries=round(m(lambda r: r["n_calls"]), 2),
+                queries_per_100_steps=round(m(lambda r: 100.0 * r["n_calls"] / r["episode_length"]), 2),
+                length=round(m(lambda r: r["episode_length"]), 1),
+                detections=round(m(lambda r: len(r.get("detections") or [])), 2), draws=len(D))
+_qb, _qd, _qd10 = _qcost(pool), _qcost(Ddet), _qcost(Ddet10)
+extra["query_cost"] = dict(base=_qb, detector_replan=_qd, detector_replan_n10=_qd10,
+                           ratio_detector=round(_qd["cost_ms"] / _qb["cost_ms"], 2),
+                           ratio_detector_n10=round(_qd10["cost_ms"] / _qb["cost_ms"], 2),
+                           queries_per_step_increase_pct=round(100 * (_qd["queries_per_100_steps"] / _qb["queries_per_100_steps"] - 1), 1))
+# each static schedule's drop under the displacement from its own undisturbed success (undisturbed grid, three
+# runs, vs the disturbed all-500 success); quoted as "29--33 points" in Sec. V-A
+_gm = lambda c: float(np.mean(_grid[c]["success"]))
+_dist = {"n2_h10": numbers["pool_all"], "n2_h5": forest["static_2_5"]["all"]["success"], "n2_h2": forest["static_2_2"]["all"]["success"],
+         "n10_h10": forest["static_10_10"]["all"]["success"], "n10_h5": extra["n10h5_disturbed"]["mean"]}
+extra["schedule_drop_vs_undisturbed"] = {c: dict(undisturbed=round(_gm(c), 1), disturbed=v, drop=round(_gm(c) - v, 1)) for c, v in _dist.items()}
 numbers["extra"] = extra
 # scripted alpha table
 numbers["alpha"] = {k: extra[k] for k in ("alpha05_k2", "alpha1_k2", "alpha1_k1", "alpha15_k2") if k in extra}

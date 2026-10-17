@@ -133,17 +133,15 @@
   {training in simulation: scripted shift $0.5\,d$ $\rightarrow$ BC $\rightarrow$ PPO teacher (privileged $d$)\\[-1pt]
    $\rightarrow$ DAgger ($\beta=1,0.5,0$) $\rightarrow$ vision-only student; detector, regressor: supervised};
 
-\node[font=\footnotesize] at (\xb+4.35,-3.1) {(b) Deployable system: when to replan, how much to correct};
+\node[font=\footnotesize] at (\xb+4.35,-3.1) {(b) Vision-only system: when to replan, how much to correct};
 
 \end{tikzpicture}%
 }
 \caption{Overview. (a) A chunked policy that is queried every $h$ actions
 cannot react to a displacement until the current chunk is spent (i).
-A learned detector interrupts the chunk and replans at the event (ii, drawn
-with one step of detection latency), and a residual policy adds a small correction $\Delta$ to every action of the
+A learned detector interrupts the chunk and replans at the event (ii), and a residual policy adds a small correction $\Delta$ to every action of the
 following queries (iii). (b) All three learned modules use only camera
-frames, actions, proprioception and the task, and are trained around the policy; the
-$\pi_{0.5}$ weights are not updated (symbols: Section~\ref{sec:method}). Gains: 250 held-out episodes over the
-seven-draw mean of the base policy (Fig.~\ref{fig:forest}).}
+frames, actions, proprioception and the task; the
+$\pi_{0.5}$ weights are not updated. Gains: held-out episodes, as in Fig.~\ref{fig:forest}.}
 \label{fig:overview}
 \end{figure*}

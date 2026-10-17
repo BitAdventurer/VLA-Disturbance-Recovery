@@ -660,7 +660,7 @@
    }
   },
   "vision_scripted": {
-   "label": "fixed-rule shift $0.5\\,\\hat d$",
+   "label": "fixed-rule shift $0.5\\,\\widehat{d}$",
    "group": "residual",
    "heldout": {
     "success": 67.9,
@@ -826,7 +826,7 @@
    }
   },
   "student_nodhat": {
-   "label": "student without $\\hat d$",
+   "label": "student without $\\widehat{d}$",
    "group": "residual",
    "heldout": {
     "success": 70.6,
@@ -3731,7 +3731,284 @@
    "wins": 0,
    "losses": 54
   },
-  "detector_auroc_heldout": 0.9989
+  "detector_auroc_heldout": 0.9989,
+  "student_vs_vision_scripted_heldout": {
+   "success": 71.8,
+   "ref": 67.9,
+   "delta": 3.9,
+   "lo": 0.9,
+   "hi": 6.9,
+   "n": 250,
+   "draws": 5,
+   "ref_draws": 3,
+   "active": 0.902,
+   "per_task": {
+    "0": -1.3,
+    "1": -2.9,
+    "2": 1.1,
+    "3": 8.8,
+    "4": 9.3,
+    "5": -2.1,
+    "6": 22.1,
+    "7": 6.1,
+    "8": -1.3,
+    "9": -0.8
+   },
+   "wins": 67,
+   "losses": 44
+  },
+  "trigger_counts": {
+   "all_approach": 367,
+   "all_fallback": 133,
+   "heldout_approach": 179,
+   "heldout_fallback": 71
+  },
+  "trigger_split_heldout": {
+   "student": {
+    "approach": {
+     "success": 75.2,
+     "ref": 62.9,
+     "delta": 12.3,
+     "lo": 7.6,
+     "hi": 17.1,
+     "n": 179,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.966,
+     "per_task": {
+      "0": 10.3,
+      "1": 1.8,
+      "3": 23.5,
+      "4": 10.6,
+      "5": -11.4,
+      "6": 19.1,
+      "7": 15.7,
+      "8": 11.4,
+      "9": 10.5
+     },
+     "wins": 73,
+     "losses": 37
+    },
+    "fallback": {
+     "success": 63.1,
+     "ref": 60.4,
+     "delta": 2.7,
+     "lo": -2.6,
+     "hi": 7.9,
+     "n": 71,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.741,
+     "per_task": {
+      "2": 2.4,
+      "3": -0.7,
+      "4": 2.9,
+      "5": -0.1,
+      "8": 15.0,
+      "9": -8.1
+     },
+     "wins": 17,
+     "losses": 17
+    }
+   },
+   "teacher": {
+    "approach": {
+     "success": 77.8,
+     "ref": 62.9,
+     "delta": 14.9,
+     "lo": 10.1,
+     "hi": 19.7,
+     "n": 179,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.951,
+     "per_task": {
+      "0": 10.3,
+      "1": 2.6,
+      "3": 19.7,
+      "4": 18.8,
+      "5": -1.4,
+      "6": 35.1,
+      "7": 12.5,
+      "8": 14.5,
+      "9": 7.4
+     },
+     "wins": 78,
+     "losses": 32
+    },
+    "fallback": {
+     "success": 68.5,
+     "ref": 60.4,
+     "delta": 8.1,
+     "lo": 3.8,
+     "hi": 12.6,
+     "n": 71,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.58,
+     "per_task": {
+      "2": 8.8,
+      "3": 19.3,
+      "4": 9.5,
+      "5": -2.0,
+      "8": 15.0,
+      "9": 18.6
+     },
+     "wins": 25,
+     "losses": 10
+    }
+   },
+   "fixed_rule": {
+    "approach": {
+     "success": 69.5,
+     "ref": 62.9,
+     "delta": 6.6,
+     "lo": 1.7,
+     "hi": 11.5,
+     "n": 179,
+     "draws": 3,
+     "ref_draws": 7,
+     "active": 0.966,
+     "per_task": {
+      "0": 11.6,
+      "1": 4.8,
+      "3": 13.4,
+      "4": -0.9,
+      "5": -29.8,
+      "6": -3.0,
+      "7": 9.5,
+      "8": 22.7,
+      "9": 8.8
+     },
+     "wins": 65,
+     "losses": 47
+    },
+    "fallback": {
+     "success": 63.8,
+     "ref": 60.4,
+     "delta": 3.5,
+     "lo": -1.0,
+     "hi": 8.4,
+     "n": 71,
+     "draws": 3,
+     "ref_draws": 7,
+     "active": 0.737,
+     "per_task": {
+      "2": 1.3,
+      "3": -2.4,
+      "4": 9.5,
+      "5": 5.9,
+      "8": 5.6,
+      "9": 0.8
+     },
+     "wins": 19,
+     "losses": 12
+    }
+   },
+   "detector_replan": {
+    "approach": {
+     "success": 67.5,
+     "ref": 62.9,
+     "delta": 4.6,
+     "lo": 1.2,
+     "hi": 8.1,
+     "n": 179,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.0,
+     "per_task": {
+      "0": 7.9,
+      "1": 5.0,
+      "3": -2.2,
+      "4": -0.3,
+      "5": -21.4,
+      "6": 10.3,
+      "7": 1.3,
+      "8": 8.4,
+      "9": 12.6
+     },
+     "wins": 64,
+     "losses": 46
+    },
+    "fallback": {
+     "success": 58.6,
+     "ref": 60.4,
+     "delta": -1.8,
+     "lo": -5.2,
+     "hi": 1.6,
+     "n": 71,
+     "draws": 5,
+     "ref_draws": 7,
+     "active": 0.0,
+     "per_task": {
+      "2": 0.0,
+      "3": -5.7,
+      "4": 2.9,
+      "5": -3.0,
+      "8": -5.0,
+      "9": 1.9
+     },
+     "wins": 14,
+     "losses": 20
+    }
+   }
+  },
+  "query_cost": {
+   "base": {
+    "cost_ms": 1218.9,
+    "queries": 37.4,
+    "queries_per_100_steps": 10.11,
+    "length": 371.1,
+    "detections": 0.0,
+    "draws": 7
+   },
+   "detector_replan": {
+    "cost_ms": 1213.9,
+    "queries": 37.24,
+    "queries_per_100_steps": 10.28,
+    "length": 363.2,
+    "detections": 1.07,
+    "draws": 5
+   },
+   "detector_replan_n10": {
+    "cost_ms": 1240.9,
+    "queries": 36.94,
+    "queries_per_100_steps": 10.29,
+    "length": 360.0,
+    "detections": 1.07,
+    "draws": 3
+   },
+   "ratio_detector": 1.0,
+   "ratio_detector_n10": 1.02,
+   "queries_per_step_increase_pct": 1.7
+  },
+  "schedule_drop_vs_undisturbed": {
+   "n2_h10": {
+    "undisturbed": 95.1,
+    "disturbed": 64.7,
+    "drop": 30.4
+   },
+   "n2_h5": {
+    "undisturbed": 92.8,
+    "disturbed": 61.4,
+    "drop": 31.4
+   },
+   "n2_h2": {
+    "undisturbed": 87.9,
+    "disturbed": 55.2,
+    "drop": 32.7
+   },
+   "n10_h10": {
+    "undisturbed": 93.9,
+    "disturbed": 65.2,
+    "drop": 28.7
+   },
+   "n10_h5": {
+    "undisturbed": 91.9,
+    "disturbed": 61.2,
+    "drop": 30.7
+   }
+  }
  },
  "alpha": {
   "alpha05_k2": {

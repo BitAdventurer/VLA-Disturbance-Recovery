@@ -38,7 +38,7 @@ for r, (label, d, ts, caps) in enumerate(rows):
             s.set_edgecolor(col); s.set_linewidth(0.8)
         ax.set_title(cap, fontsize=5.8, pad=1.5, color=(VERM if (c == 1) else "black"), linespacing=0.95)
         if c == 0:
-            ax.text(-0.1, 0.5, label, transform=ax.transAxes, ha="right", va="center", fontsize=6.5, color=col,
+            ax.text(-0.1, 0.5, label, transform=ax.transAxes, ha="right", va="center", fontsize=6.5, color=("#4D4D4D" if r == 0 else GREEN),
                     fontweight="bold", linespacing=1.1)
 if len(sys.argv) > 2:
     fig.savefig(sys.argv[1], dpi=int(sys.argv[2]))
