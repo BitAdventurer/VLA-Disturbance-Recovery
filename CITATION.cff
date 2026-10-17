@@ -9,6 +9,8 @@ authors:
     given-names: Tae-Eui
     affiliation: Korea University
 license: MIT
+repository-code: "https://github.com/BitAdventurer/VLA-Disturbance-Recovery"
+url: "https://github.com/BitAdventurer/VLA-Disturbance-Recovery"
 preferred-citation:
   type: conference-paper
   title: "When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance Recovery in Vision-Language-Action Policies"
