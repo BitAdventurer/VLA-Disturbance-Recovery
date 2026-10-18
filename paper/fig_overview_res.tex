@@ -59,7 +59,7 @@
 \node[qry] at ({\xo+5*\w},\yB) {};
 \foreach \t in {5,...,16} \node[exe] at ({\xo+(\t+0.5)*\w},\yB) {};
 \node[qry] at ({\xo+15*\w},\yB) {};
-\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yB) {$+2.8$ pts, $1.00\times$ cost};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yB) {$+2.8$ pts, $1.00\times$ queries};
 
 % row (iii): event-triggered replanning + residual correction
 \def\yC{-1.24}
@@ -142,6 +142,6 @@ cannot react to a displacement until the current chunk is spent (i).
 A learned detector interrupts the chunk and replans at the event (ii), and a residual policy adds a small correction $\Delta$ to every action of the
 following queries (iii). (b) All three learned modules use only camera
 frames, actions, proprioception and the task; the
-$\pi_{0.5}$ weights are not updated. Gains: held-out episodes, as in Fig.~\ref{fig:forest}.}
+$\pi_{0.5}$ weights are not updated. Gains: held-out initial states, as in Fig.~\ref{fig:forest}.}
 \label{fig:overview}
 \end{figure*}

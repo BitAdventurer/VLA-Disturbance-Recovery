@@ -42,21 +42,24 @@ against the seven-draw mean of the base policy on the same episodes, with task-s
 
 V: camera frames and proprioception; P: privileged simulator state. Success is the mean over draws. The scripted
 shift and the teacher act at scheduled queries (no replan at the event); the V rows replan at each detection.
-On the 250 held-out episodes the student reaches 71.8% (+9.6 [+5.8, +13.4]); on displacements twice as large (8–12 cm, all 500
+Undisturbed: one draw that shares the base row's sampling-noise seed; over three independent base draws the
+undisturbed success is 95.1%, and the student differs from it by +0.3 [−1.0, +1.7].
+On the 250 episodes from held-out initial states the student reaches 71.8% (+9.6 [+5.8, +13.4]); on displacements twice as large (8–12 cm, all 500
 episodes) it gains +8.3 [+5.0, +11.5]. Three distillation seeds give 75.9–76.8% (mean 76.4%) on all 500 episodes.
 
 <p align="center"><img src="assets/forest.png" width="560" alt="Gains over the base policy on the 250 held-out episodes"></p>
 
 Simple inference-time levers (replanning more often, more integration steps, best-of-8 chunk selection) recover
-little; replanning recovers about three points when timed at the event and nothing measurable at the next
-scheduled query; the learned residual gains the most, also against a fixed-rule shift tuned on the training
+little. The base policy already replans at the next scheduled query, and spending more computation there recovers
+nothing measurable, whereas moving the query to the event recovers about three points; the learned residual gains the most, also against a fixed-rule shift tuned on the training
 initial states (held out: +3.9 [+0.9, +6.9] over the fixed-rule shift). The gains concentrate where the
 displacement is triggered by the approach (held out +12.3 vs +2.7 when the time fallback moves an object early).
 The study is limited to one policy and benchmark, teleport displacements and synchronous inference in simulation,
 and the held-out initial states also served model selection (see the paper's Conclusion). Every success rate and interval in the paper's text, Table II
 and Figs. 2–3 is recomputed from the result files in this repository (see below). The few remaining numbers come
 from the files next to the modules (`experiments/bok/*.json`, `experiments/ckpt/*.log.jsonl`,
-`experiments/latency.json`) and from `paper_outputs/calib_signals.txt`; Table I comes from separate tracking runs
+`experiments/latency.json`, and `experiments/module_latency.json` from `scripts/measure_modules.py` for the
+module times in Sec. V-C) and from `paper_outputs/calib_signals.txt`; Table I comes from separate tracking runs
 analysed with `scripts/diag_grasp.py`.
 
 <p align="center"><img src="assets/qual.png" width="760" alt="One held-out episode: base policy (timeout) and residual student (success)"></p>

@@ -463,9 +463,10 @@ extra["trigger_counts"] = dict(all_approach=sum(map(_APP, pool[0])), all_fallbac
 extra["trigger_split_heldout"] = {
     name: dict(approach=paired(D, pool, lambda k: HO(k) and _APP(k)), fallback=paired(D, pool, lambda k: HO(k) and _FB(k)))
     for name, D in (("student", Ds), ("teacher", Dt), ("fixed_rule", Dv), ("detector_replan", Ddet))}
-# policy-query cost of the detector replan (Sec. IV-A): query time per episode summed from the measured per-query
-# latency (cost_ms), relative to the base pool on the same 500 episodes; detections per disturbed episode; queries
-# per 100 control steps; mean episode length
+# policy-query time of the detector replan (Sec. IV-A): cost_ms = the episode's queries times the per-query round-trip
+# latency measured offline for each integration setting (latency.json), an accounting value (simulation is synchronous),
+# not a timed control loop; relative to the base pool on the same 500 episodes; detections per disturbed episode;
+# queries per 100 control steps; mean episode length
 Ddet10, _ = load([RD("det_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")])
 _ks = sorted(pool[0])
 def _qcost(D):
@@ -485,6 +486,85 @@ _gm = lambda c: float(np.mean(_grid[c]["success"]))
 _dist = {"n2_h10": numbers["pool_all"], "n2_h5": forest["static_2_5"]["all"]["success"], "n2_h2": forest["static_2_2"]["all"]["success"],
          "n10_h10": forest["static_10_10"]["all"]["success"], "n10_h5": extra["n10h5_disturbed"]["mean"]}
 extra["schedule_drop_vs_undisturbed"] = {c: dict(undisturbed=round(_gm(c), 1), disturbed=v, drop=round(_gm(c) - v, 1)) for c, v in _dist.items()}
+# ---- 2026-10-18 external review: scope of "same disturbance", undisturbed reference, 8-12 cm split at 10 cm --------
+# (1) event identity: each method run vs the base draw with the same noise salt (event step, displaced object, vector)
+def _ev(r):
+    d = r.get("disturbance")
+    if d is not None:
+        if d.get("applied_t") is None:
+            return None
+        return d["applied_t"], d.get("object"), (d["mag"] * d["dir"][0], d["mag"] * d["dir"][1])
+    if r.get("applied_t") is None:
+        return None
+    td = r.get("true_d")
+    return r["applied_t"], r.get("object"), (None if td is None else (td[0], td[1]))
+def _salt(path):
+    q = path[0] if isinstance(path, tuple) else path
+    b = os.path.basename(q)
+    return int(b.split("_ns")[1][0]) if "_ns" in b else 0
+def _same_event(a, b):
+    if a is None or b is None:
+        return a is None and b is None
+    return a[0] == b[0] and a[1] == b[1] and (a[2] is None or b[2] is None or
+                                              max(abs(a[2][0] - b[2][0]), abs(a[2][1] - b[2][1])) < 1e-4)
+_evid = {}
+for key, label, paths, group, hollow in arms:
+    if key.startswith("static_"):
+        continue
+    for p in paths:
+        d = L(p)
+        if not d:
+            continue
+        ref = pool[_salt(p)]
+        ks = [k for k in d if k in ref]
+        _evid["%s|%s" % (key, os.path.basename(p[0] if isinstance(p, tuple) else p))] = dict(
+            n=len(ks), same=sum(_same_event(_ev(d[k]), _ev(ref[k])) for k in ks), salt=_salt(p))
+_pairs = []
+for i in range(len(pool)):
+    for j in range(i + 1, len(pool)):
+        ks = [k for k in pool[i] if k in pool[j] and _ev(pool[i][k]) and _ev(pool[j][k])]
+        dt = [abs(_ev(pool[i][k])[0] - _ev(pool[j][k])[0]) for k in ks]
+        _pairs.append(dict(diff_pct=100.0 * float(np.mean([x > 0 for x in dt])), median_shift_if_diff=float(np.median([x for x in dt if x > 0])),
+                           object_or_vector_diff=sum(not (_ev(pool[i][k])[1] == _ev(pool[j][k])[1]) for k in ks)))
+_static = {}
+for name in ("obj_static_n2_h5_s0", "obj_static_n2_h2_s0", "obj_static_n10_h10_s0", "obj_static_n10_h5_s0", "obj_static_n10_h5_ns1_s0"):
+    d = L(RD(name))
+    if not d:
+        continue
+    ref = pool[_salt(RD(name))]
+    ks = [k for k in d if k in ref and _ev(d[k]) and _ev(ref[k])]
+    dt = [abs(_ev(d[k])[0] - _ev(ref[k])[0]) for k in ks]
+    _static[name] = dict(n=len(ks), diff_pct=round(100.0 * float(np.mean([x > 0 for x in dt])), 1),
+                         median_shift_if_diff=float(np.median([x for x in dt if x > 0])),
+                         object_diff=sum(_ev(d[k])[1] != _ev(ref[k])[1] for k in ks))
+extra["event_identity"] = dict(
+    method_runs=_evid, method_runs_all_identical=all(v["same"] == v["n"] for v in _evid.values()),
+    base_pairs=dict(n_pairs=len(_pairs), diff_pct_mean=round(float(np.mean([q["diff_pct"] for q in _pairs])), 1),
+                    diff_pct_range=[round(min(q["diff_pct"] for q in _pairs), 1), round(max(q["diff_pct"] for q in _pairs), 1)],
+                    median_shift_if_diff=float(np.median([q["median_shift_if_diff"] for q in _pairs])),
+                    object_diff_total=sum(q["object_or_vector_diff"] for q in _pairs)),
+    static_schedules=_static,
+    static_diff_pct_range=[min(v["diff_pct"] for v in _static.values()), max(v["diff_pct"] for v in _static.values())] if _static else None)
+# (2) undisturbed: the base row of Table II (cal_none_s0) shares seed 0 with results/static_n2_h10_s0, so the
+# independent undisturbed reference is the three grid draws s0-s2 (mean 95.1); gains against it and same-seed flips
+_G3, _ = load([RO("static_n2_h10_s%d" % s) for s in (0, 1, 2)])
+_u = dict(student=load([RR("student_v2_none")])[0], detector=load([RD("det_none_n2h10_s0")])[0],
+          teacher=load([(RR("eval_res_v4_it039_none"), RR("eval_res_v4_it039_tr_none"))])[0],
+          fixed_rule=load([RR("vision_s05_k2_none")])[0])
+_cs = Dnone[0]; _g0 = L(RO("static_n2_h10_s0"))
+extra["undisturbed_reference"] = dict(
+    grid3_mean=_grid["n2_h10"]["mean"], same_seed_base=numbers["undisturbed_base"],
+    seed0_files_differ=sum(_cs[k]["success"] != _g0[k]["success"] for k in _cs if k in _g0),
+    vs_grid3={n: paired(D, _G3) for n, D in _u.items() if D},
+    vs_same_seed_flips={n: dict(gained=paired(D, Dnone)["wins"], lost=paired(D, Dnone)["losses"]) for n, D in _u.items() if D})
+# (3) 8-12 cm split at the regressor's 10 cm training limit, by the planned magnitude (same in every draw)
+_b0 = L(RD("objbig_static_n2_h10_s0"))
+_GT10 = lambda k: _b0[k]["disturbance"]["mag"] > 0.10
+extra["big_split_10cm"] = dict(
+    n_gt10=sum(map(_GT10, _b0)), n_gt10_heldout=sum(1 for k in _b0 if _GT10(k) and HO(k)), base_draws=len(_BIGREF),
+    student_le10=paired(Dbs, _BIGREF, lambda k: not _GT10(k)), student_gt10=paired(Dbs, _BIGREF, _GT10),
+    student_gt10_heldout=paired(Dbs, _BIGREF, lambda k: _GT10(k) and HO(k)),
+    fixed_rule_gt10=paired(Dbv, _BIGREF, _GT10), fixed_rule_gt10_heldout=paired(Dbv, _BIGREF, lambda k: _GT10(k) and HO(k)))
 numbers["extra"] = extra
 # scripted alpha table
 numbers["alpha"] = {k: extra[k] for k in ("alpha05_k2", "alpha1_k2", "alpha1_k1", "alpha15_k2") if k in extra}

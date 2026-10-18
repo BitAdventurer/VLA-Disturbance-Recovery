@@ -1,0 +1,67 @@
+{
+ "date": "2026-10-18 20:06:39 KST",
+ "host_cpu": "13th Gen Intel(R) Core(TM) i9-13900K",
+ "torch": "2.4.1+cpu",
+ "loadavg_before": [
+  0.66796875,
+  1.44677734375,
+  1.35546875
+ ],
+ "params": {
+  "detector": 107905,
+  "regressor": 527522,
+  "student_mlp": 76035
+ },
+ "when": {
+  "detector": "every control step",
+  "regressor": "once per detection",
+  "student_mlp": "each active query (up to 6 after a detection)"
+ },
+ "threads": {
+  "1": {
+   "detector": {
+    "median_ms": 0.4389,
+    "p90_ms": 0.4473,
+    "mean_ms": 0.44,
+    "n": 1000
+   },
+   "regressor": {
+    "median_ms": 3.9511,
+    "p90_ms": 3.9767,
+    "mean_ms": 3.9545,
+    "n": 300
+   },
+   "student_mlp": {
+    "median_ms": 0.018,
+    "p90_ms": 0.0183,
+    "mean_ms": 0.018,
+    "n": 1000
+   }
+  },
+  "2": {
+   "detector": {
+    "median_ms": 0.3619,
+    "p90_ms": 0.369,
+    "mean_ms": 0.3624,
+    "n": 1000
+   },
+   "regressor": {
+    "median_ms": 2.1554,
+    "p90_ms": 2.2139,
+    "mean_ms": 2.1652,
+    "n": 300
+   },
+   "student_mlp": {
+    "median_ms": 0.0195,
+    "p90_ms": 0.0198,
+    "mean_ms": 0.0195,
+    "n": 1000
+   }
+  }
+ },
+ "loadavg_after": [
+  0.66796875,
+  1.44677734375,
+  1.35546875
+ ]
+}
