@@ -128,9 +128,7 @@ Sentinel checks temporal action consistency and, with a vision-language
 model, task progress~\cite{agia2024sentinel}, FAIL-Detect applies conformal
 sequential out-of-distribution detection~\cite{xu2025faildetect}, and SAFE
 learns a VLA failure score from internal features~\cite{gu2025safe}; these
-monitors flag failures or halt the policy. Like VLA-Corrector, we use detection to
-\emph{act}, but on one specific external event, and we also gate a learned
-correction.
+monitors flag failures or halt the policy. Like VLA-Corrector, we use detection to \emph{act}, here on one external event.
 
 \noindent\textbf{Correcting a fixed policy's actions.}
 Residual RL~\cite{johannink2019residual} refines imitation-learned policies~\cite{yuan2025decorator,ankile2024resip} and a
@@ -138,8 +136,7 @@ frozen $\pi_0$, with the corrections then distilled into the VLA~\cite{xiao2025p
 RL~\cite{chen2025conrft,guo2025irevla}, which has been shown to help when an
 object is moved mid-episode~\cite{liu2025rl4vla}, or with offline RL to recover from errors~\cite{gao2026ogpo}. A training-free operator offsets and
 compresses a chunk toward perceived motion~\cite{zhang2026pacepath}, the
-closest analogue of our fixed-rule shift. None of these corrections is
-gated by an event; ours is zero except after a detected displacement,
+closest analogue of our fixed-rule shift. TRANSIC gates a residual with a classifier learned from human interventions~\cite{jiang2024transic}; ours is zero except after a detected scene displacement,
 distilled from a privileged teacher into a vision-only student as
 in~\cite{ankile2024resip}, and compared with a fixed-rule shift on the same
 episodes.
@@ -214,7 +211,7 @@ receives, for each of the two cameras (third-person and wrist), the
 previous frame, the current frame and their difference at $64\times64$
 grayscale, together with the action executed between them and the measured
 end-effector motion; a four-layer CNN and a small MLP fuse these into one
-logit (0.1\,M parameters). Hand-crafted signals (camera, backbone-embedding and chunk changes) reach query-level AUROCs of only 0.50--0.83 on training-state episodes, whereas this network detects 87--90\% of held-out displacements within three steps. Positives are the frame pairs straddling a displacement, hard negatives the pairs within 15
+logit (0.1\,M parameters). Hand-crafted signals (camera, backbone-embedding and chunk changes) reach query-level AUROCs of only 0.50--0.83 on training-state episodes. Positives are the frame pairs straddling a displacement, hard negatives the pairs within 15
 steps of it, plus 250 undisturbed training-state episodes; training on the 500 events of
 two disturbed runs that fall on the training initial states takes seven
 minutes, and the threshold is set on that split for 0.05 false alarms per undisturbed episode.
@@ -241,7 +238,7 @@ a detected displacement, so undisturbed behavior is touched only on false
 alarms.
 
 \noindent\textbf{Scripted shift (privileged).}
-As a probe, once the simulator reports at a scheduled query that an object of interest has moved by $d$ since the reset (more than 2\,cm, not lifted), we add $\alpha d$ divided equally over the $kH$
+As a reference, once the simulator reports at a scheduled query that an object of interest has moved by $d$ since the reset (more than 2\,cm, not lifted), we add $\alpha d$ divided equally over the $kH$
 actions of the next $k$ queries ($0.5\,d$ is about 0.1 units per action),
 horizontal only and without interrupting the chunk. With $k=2$, $\alpha=0.5$ and $1$ perform alike (72.2\% and 71.2\% on all 500 episodes, one draw), while $\alpha=1.5$ falls to 64.8\%,
 presumably because overcorrecting adds to the base policy's own partial correction. A vision-only counterpart, the \emph{fixed-rule shift}, replans at each detection and adds $0.5\,\hat d$ in the same way,
@@ -256,7 +253,7 @@ opens when an object has jumped more than 2.5\,cm since the previous query
 while resting at its initial height (within 1.5\,cm), with the gripper open
 and more than 5\,cm away, and closes once the object is lifted 3\,cm. It
 opens in 85\% of disturbed and in none of 250 undisturbed held-out episodes;
-a cumulative 2-cm gate opened in 54\% of the undisturbed ones and, with a learned teacher behind it, cut their
+a cumulative 2-cm gate opened in 54\% of the undisturbed ones and, with a learned teacher behind it (trained, like ours, only on disturbed episodes), cut their
 success to 73.6\%. The actor is Gaussian over $u$ (initial standard deviation 0.30). We first clone the
 scripted shift ($\alpha=0.5$, $k=2$) from about 450 episodes, then run PPO with generalized advantage
 estimation~\cite{schulman2016gae} (settings in the code release) for 40 iterations of 120 episodes on the
@@ -302,13 +299,13 @@ excludes zero), noise draws.}
 
 \subsection{Inference Levers Recover Little}\label{sec:levers}
 Fig.~\ref{fig:forest} (top, held out) shows simple versions of the levers that adaptive-inference methods tune. Replanning twice as often, $(2,5)$, trends down
-($-4.2$) and five times as often, $(2,2)$, loses ten points (87.9\% undisturbed), and every schedule tested falls 29--33 points below its own undisturbed success (all 500). Five times more integration steps, $(10,10)$, change nothing measurable ($+1.0$). Selecting one of $K=8$ sampled chunks for the seven queries after the (oracle-timed) event also recovers little: random $-0.6$, medoid $+0.6$, a privileged rule aiming at the displaced object $+3.0$. Run once, $(10,10)$ and chunk selection cannot exclude small gains. 
+($-4.2$) and five times as often, $(2,2)$, loses ten points (87.9\% undisturbed), and every schedule tested falls 29--33 points below its own undisturbed success (all 500). Five times more integration steps, $(10,10)$, change nothing measurable ($+1.0$). Selecting one of $K=8$ sampled chunks for the seven queries after the (oracle-timed) event also recovers little: random $-0.6$, medoid $+0.6$, a privileged rule aiming at the displaced object $+3.0$. 
 
 
 \subsection{When to Replan: At the Event}\label{sec:event}
 On held-out episodes, replanning only from the \emph{next scheduled} query gains nothing measurable even with $n=10$ and oracle event timing ($+0.6$ [$-2.6$, $+4.1$]). Replanning \emph{at} the displacement with the same oracle gains $+3.7$ at $(2,10)$ and $+4.5$ with $n=10$ for the following queries, the latter $+3.9$ [$+0.4$, $+7.3$] above the next-query replan. The learned detector realizes most of this gain without the
 oracle ($+2.8$ and $+4.2$; all 500: Table~\ref{tab:rec}), at $1.00\times$ and $1.02\times$ the inference cost. In closed loop it detects 87--90\% of the held-out displacements within three control steps (98--100\% on the training initial states), with 0.10--0.15 false alarms per disturbed episode, and leaves undisturbed success at
-95.2\% on all 500 (base 95.4\%). Even at the event, a replan recovers only a small part of the loss (Section~\ref{sec:correct}).
+95.2\% on all 500 (base 95.4\%). Even at the event, a replan recovers only a small part of this loss (Section~\ref{sec:correct}).
 
 \subsection{How Much to Correct: Residual Recovery}\label{sec:correct}
  On held-out episodes the privileged scripted shift and the fixed-rule shift by $0.5\,\hat d$, which adds a replan at each detection, gain about the same ($+6.1$ and $+5.7$, three draws each; Fig.~\ref{fig:forest}). With privileged $d$, the detector's replan plus the scripted shift reaches 71.3\% held out (three draws), $+6.4$ [$+2.9$, $+10.1$] above the replan alone: shifting the actions adds to replanning. Learning the correction
@@ -375,7 +372,7 @@ Gains concentrate where the approach triggers the displacement: held out, the st
 
 
 
-In the held-out episode of Fig.~\ref{fig:qual}, the mug is displaced 5.1\,cm at $t=47$; the base policy closes the gripper where the mug used to be, pushes it around, knocks it over and times out. With the detector and student, a new chunk arrives one step after the event and the mug is grasped at $t=97$.
+In the held-out episode of Fig.~\ref{fig:qual}, the mug is displaced 5.1\,cm at $t=47$; the base policy closes the gripper where the mug used to be, knocks it over and times out. With the detector and student, a new chunk arrives one step after the event and the mug is grasped at $t=97$.
 The regressor's estimate is poor here (1\,cm, wrong direction), yet the correction points toward the mug, perhaps from the base chunk's drift or a task-level push.
 
 
@@ -384,10 +381,8 @@ The regressor's estimate is poor here (1\,cm, wrong direction), yet the correcti
 % =====================================================================
 
 When the object it approaches is suddenly displaced, $\pi_{0.5}$ often first closes the gripper
-nearer its old position and loses 31 points. Inference-time levers recover little;
-replanning at the detected event recovers about three points, a
-fixed-rule shift about six, and an event-gated residual learned with RL ten (held out) to eleven (all 500). The gate keeps this cheap post-training conservative: a loosely gated teacher cut held-out undisturbed success from 95.2\% to 73.6\%; the
-gated residual leaves it unchanged. Limitations are one policy and benchmark, teleports, synchronous inference in simulation, most modules trained once and held-out states reused for model selection. Next, we will test whether the correction responds to the displacement or acts partly as a task-level push, compare it with fine-tuning the policy, and add physical disturbances, asynchronous execution, an end-to-end gate (possibly as cooperating agents~\cite{shin2024mars}) and hardware.
+nearer its old position and loses 31 points. Replanning at the detected event recovers about three points, a
+fixed-rule shift about six, and an event-gated residual learned with RL ten (held out) to eleven (all 500). The gate keeps this cheap post-training conservative: undisturbed success is unchanged, whereas a loosely gated teacher cut it to 73.6\%. Limitations are one policy and benchmark, teleports, synchronous simulation, mostly single training runs and held-out states reused for model selection. Next, we test whether the correction tracks the displacement or acts partly as a task-level push, compare it with fine-tuning, and add physical disturbances, asynchronous execution, an end-to-end gate (possibly as cooperating agents~\cite{shin2024mars}) and hardware.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs_res}

@@ -7,7 +7,7 @@ Preprint of **When to Replan and How Much to Correct: Residual Reinforcement Lea
 in Vision-Language-Action Policies** (Chang-Hoon Ji and Tae-Eui Kam, Korea University), an ICEIC 2027 submission
 (IEEE Publication Track).
 
-**[ji2027replan.pdf](ji2027replan.pdf)** is the manuscript as of 2026-10-17 (6 pages) with the notice above added in
+**[ji2027replan.pdf](ji2027replan.pdf)** is the manuscript as of 2026-10-18 (6 pages) with the notice above added in
 the top margin of page 1; the text is otherwise identical to `main_iceic_residual.tex`.
 
 | File | Content |
