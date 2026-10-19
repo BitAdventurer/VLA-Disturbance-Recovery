@@ -51,9 +51,23 @@ episodes) it gains +8.3 [+5.0, +11.5]. Three distillation seeds give 75.9–76.8
 
 Simple inference-time levers (replanning more often, more integration steps, best-of-8 chunk selection) recover
 little. The base policy already replans at the next scheduled query, and spending more computation there recovers
-nothing measurable, whereas moving the query to the event recovers about three points; the learned residual gains the most, also against a fixed-rule shift tuned on the training
+nothing measurable, whereas moving the query to the event recovers only a few points (the detector's replan: +2.8 held out, +0.2 on fresh
+initial states); the learned residual gains the most, also against a fixed-rule shift tuned on the training
 initial states (held out: +3.9 [+0.9, +6.9] over the fixed-rule shift). The gains concentrate where the
 displacement is triggered by the approach (held out +12.3 vs +2.7 when the time fallback moves an object early).
+
+**Pre-registered test on fresh initial states (2026-10-19).** The held-out initial states 25–49 also served model
+selection, so the pipeline as submitted was run once on initial states 50–99 of each task's full `.init` file (the
+benchmark uses 0–49), which no rollout had used, following `experiments/bok/prereg_fresh50.md` (hashes in
+`prereg_fresh50.sha256`, written before the runs). On these 500 episodes the student reaches 73.7% against 65.4% for
+the base policy (+8.4 [+5.6, +11.2]; three vs five draws) and +2.9 [+0.7, +5.1] over the fixed-rule shift (itself +5.4);
+the detector's replan alone gains +0.2 [−2.4, +2.8], so its small gain is not confirmed; undisturbed success changes by
+−0.2 [−1.0, +0.4]; split by trigger (371 approach, 129 time fallback), the student gains +11.3 [+7.8, +14.7] and −0.1 [−4.7, +4.5]
+over the base, and +4.5 [+1.8, +7.1] and −1.6 [−5.4, +2.1] over the fixed-rule shift. Without the three settle
+outliers the main result is +8.4 [+5.6, +11.3] (497 episodes). Undisturbed, one episode flipped up and two down, and the
+student acted in 6.6% of episodes. Results are in
+`experiments/results_test/`; the analysis is the pinned block in `scripts/fig_paper.py` (`extra.fresh50`). The runs used
+the default-off `--init_file full` option of `experiments/residual_rl.py`.
 The study is limited to one policy and benchmark, teleport displacements and synchronous inference in simulation,
 and the held-out initial states also served model selection (see the paper's Conclusion). Every success rate and interval in the paper's text, Table II
 and Figs. 2–3 is recomputed from the result files in this repository (see below). The few remaining numbers come

@@ -801,7 +801,8 @@ def make_world(args):
         task_ids = list(range(10)) if args.tasks == "all" else [int(x) for x in args.tasks.split(",")]
 
         def get_env(task_id):
-            return MockEnv(seed=args.seed * 100 + task_id), "mock task %d put the bowl in the drawer" % task_id, [None] * 50
+            n_states = 100 if getattr(args, "init_file", "pruned") == "full" else 50
+            return MockEnv(seed=args.seed * 100 + task_id), "mock task %d put the bowl in the drawer" % task_id, [None] * n_states
         return policy, tools, get_env, task_ids
 
     from libero.libero import benchmark, get_libero_path
@@ -820,8 +821,29 @@ def make_world(args):
         env.seed(args.seed)     # affects object positions even with fixed initial states (openpi note)
         for _ in range(int(getattr(args, "warm_reset", 0) or 0)):   # throwaway resets of a freshly built env
             env.reset()
-        return env, task.language, suite.get_task_init_states(task_id)
+        return env, task.language, load_init_states(suite, task_id, getattr(args, "init_file", "pruned"))
     return policy, tools, get_env, task_ids
+
+
+def load_init_states(suite, task_id, which="pruned"):
+    """Initial states of one task. 'pruned' (default): <task>.pruned_init, the 50 states the benchmark evaluates, exactly
+    as before. 'full': <task>.init, all 100 states; its first 50 must equal .pruned_init. States 50-99 are used only by the
+    one-time fresh-initial-state test of 2026-10-19 (experiments/bok/prereg_fresh50.md)."""
+    states = suite.get_task_init_states(task_id)
+    if which == "pruned":
+        return states
+    if which != "full":
+        raise ValueError("init_file must be 'pruned' or 'full', not %r" % (which,))
+    import torch
+    from libero.libero import get_libero_path
+    task = suite.get_task(task_id)
+    name = task.init_states_file
+    if not name.endswith(".pruned_init"):
+        raise SystemExit("task %d: unexpected init-state file name %r" % (task_id, name))
+    full = torch.load(os.path.join(get_libero_path("init_states"), task.problem_folder, name[:-len(".pruned_init")] + ".init"))
+    if len(full) != 100 or not np.array_equal(np.asarray(full)[:len(states)], np.asarray(states)):
+        raise SystemExit("task %d: .init is not 100 states with .pruned_init as its first 50" % task_id)
+    return full
 
 
 def save_cand_log(path, entries):

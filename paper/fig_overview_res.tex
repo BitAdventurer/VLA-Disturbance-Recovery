@@ -59,7 +59,7 @@
 \node[qry] at ({\xo+5*\w},\yB) {};
 \foreach \t in {5,...,16} \node[exe] at ({\xo+(\t+0.5)*\w},\yB) {};
 \node[qry] at ({\xo+15*\w},\yB) {};
-\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yB) {$+2.8$ pts, $1.00\times$ queries};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yB) {$+2.8$ pts ($+0.2$ fresh)};
 
 % row (iii): event-triggered replanning + residual correction
 \def\yC{-1.24}
@@ -70,7 +70,7 @@
 \node[qry] at ({\xo+5*\w},\yC) {};
 \foreach \t in {5,...,16} \node[cor] at ({\xo+(\t+0.5)*\w},\yC) {};
 \node[qry] at ({\xo+15*\w},\yC) {};
-\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yC) {$+9.6$ pts, vision only};
+\node[lbl, anchor=west] at ({\xo+17*\w+0.1},\yC) {$+9.6$ pts ($+8.4$ fresh)};
 
 % displacement marker
 \draw[cevent, line width=0.6pt] ({\xo+\td*\w},\yA+0.25) -- ({\xo+\td*\w},\yC-0.25);
@@ -142,6 +142,6 @@ cannot react to a displacement until the current chunk is spent (i).
 A learned detector interrupts the chunk and replans at the event (ii), and a residual policy adds a small correction $\Delta$ to every action of the
 following queries (iii). (b) All three learned modules use only camera
 frames, actions, proprioception and the task; the
-$\pi_{0.5}$ weights are not updated. Gains: held-out initial states, as in Fig.~\ref{fig:forest}.}
+$\pi_{0.5}$ weights are not updated. Gains: held-out initial states as in Fig.~\ref{fig:forest} (fresh ones in parentheses).}
 \label{fig:overview}
 \end{figure*}

@@ -1,0 +1,17 @@
+2026-10-19 04:44:41 FRESH50 start
+2026-10-19 05:01:20 done fresh_base_s0 eval zero: 500 episodes, success 66.2%
+2026-10-19 05:17:42 done fresh_student_s0 eval student:ckpt/student_v2.pt: 500 episodes, success 74.4%
+2026-10-19 05:32:02 done fresh_fixed_s0 eval vision:0.5,2: 500 episodes, success 71.0%
+2026-10-19 05:45:38 done fresh_base_ns1 eval zero: 500 episodes, success 64.8%
+2026-10-19 05:59:13 done fresh_student_ns1 eval student:ckpt/student_v2.pt: 500 episodes, success 73.0%
+2026-10-19 06:13:03 done fresh_fixed_ns1 eval vision:0.5,2: 500 episodes, success 70.8%
+2026-10-19 06:34:27 done fresh_base_ns2 eval zero: 500 episodes, success 65.8%
+2026-10-19 06:54:47 done fresh_student_ns2 eval student:ckpt/student_v2.pt: 500 episodes, success 73.8%
+2026-10-19 07:12:15 done fresh_fixed_ns2 eval vision:0.5,2: 500 episodes, success 70.6%
+2026-10-19 07:30:48 done fresh_base_ns3 eval zero: 500 episodes, success 67.0%
+2026-10-19 07:46:31 done fresh_base_ns4 eval zero: 500 episodes, success 63.0%
+2026-10-19 08:05:42 done fresh_det_s0 eval zero: 500 episodes, success 65.0%
+2026-10-19 08:23:42 done fresh_det_ns1 eval zero: 500 episodes, success 66.2%
+2026-10-19 08:38:21 done fresh_none_base_s0 eval zero: 500 episodes, success 94.2%
+2026-10-19 08:54:03 done fresh_none_student_s0 eval student:ckpt/student_v2.pt: 500 episodes, success 94.0%
+2026-10-19 08:54:03 FRESH50_COMPLETE failed=0

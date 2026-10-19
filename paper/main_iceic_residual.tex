@@ -47,7 +47,7 @@ kamte@korea.ac.kr}
 
 % No math, symbols, or footnotes in the abstract (IEEE rule).
 \begin{abstract}
-Vision-language-action policies execute predicted action chunks open loop, so after an object is suddenly displaced, the robot follows a plan made for the old scene. On LIBERO-10, teleporting the target object by 4 to 6 cm, mostly as the gripper approaches, cuts the pi0.5 policy's success from 95 to 65 percent. Under one paired protocol, simple inference-time levers (replan frequency, integration steps, chunk selection) recover little. More computation at the next scheduled query recovers nothing measurable, whereas moving the query to the event with a learned camera-frame detector recovers about three points without adding policy queries per episode. Correcting the actions recovers more. A fixed-rule shift toward the estimated displacement gains about six points. An event-gated residual, cloned from a scripted shift on privileged state, refined with reinforcement learning as lightweight post-training and distilled into a vision-only student, raises success on initial states not used for training from 62.2 to 71.8 percent (gain 9.6 points, 95 percent interval 5.8 to 13.4; 11.2 on all 500 episodes, 8.3 with displacements twice as large), with no measurable change in undisturbed success.
+Vision-language-action policies execute predicted action chunks open loop, so after an object is suddenly displaced, the robot follows a plan made for the old scene. On LIBERO-10, teleporting the target object by 4 to 6 cm, mostly as the gripper approaches, cuts the pi0.5 policy's success from 95 to 65 percent. Under one paired protocol, simple inference-time levers (replan frequency, integration steps, chunk selection) recover little. More computation at the next scheduled query recovers nothing measurable, and moving the query to the event with a learned camera-frame detector recovers zero to three points without adding policy queries per episode. Correcting the actions recovers more. A fixed-rule shift toward the estimated displacement gains about six points. An event-gated residual, cloned from a scripted shift on privileged state, refined with reinforcement learning as lightweight post-training and distilled into a vision-only student, raises success from 65.4 to 73.7 percent in a pre-registered test on 500 fresh initial states (gain 8.4 points, 95 percent interval 5.6 to 11.2; 2.9 points over the fixed rule), with no measurable change in undisturbed success.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -83,7 +83,7 @@ when to replan, how much to compute per query, or which of several sampled
 chunks to keep~\cite{liang2026aac,pan2026corrector,chun2025dasip,liu2025bid}; runtime
 monitors detect execution failures~\cite{agia2024sentinel,xu2025faildetect,gu2025safe};
 and residual reinforcement learning (RL) learns corrections on top of a fixed policy~\cite{yuan2025decorator,xiao2025pld}.
-They are evaluated on different tasks and disturbances; a concurrent benchmark of mid-execution changes such as target relocation finds, for four of its 14 policies including $\pi_{0.5}$, that varying the query cadence does not close the gap, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test simple versions of each response under one protocol. Moving the query to the event helps by only about three points, and the new chunk seems to aim only partly at the new position; correcting the actions recovers more: about six of the 31 lost points with a fixed rule and about ten with a detector-gated residual policy trained with RL as lightweight post-training around the VLA (Fig.~\ref{fig:overview}).
+They are evaluated on different tasks and disturbances; a concurrent benchmark of mid-execution changes such as target relocation finds, for four of its 14 policies including $\pi_{0.5}$, that varying the query cadence does not close the gap, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test simple versions of each response under one protocol. Moving the query to the event helps by only a few points, and the new chunk seems to aim only partly at the new position; correcting the actions recovers more: about six of the 31 lost points with a fixed rule and eight to eleven with a detector-gated residual policy cloned and refined with RL as post-training around the VLA (Fig.~\ref{fig:overview}).
 
 Our contributions are:
 \begin{itemize}
@@ -92,11 +92,11 @@ Our contributions are:
         (complementing studies that perturb the setup before execution~\cite{fei2025liberoplus}
         or the robot's actions during it~\cite{guo2026robustvla,gao2026ogpo}), with a diagnosis of the failure;
   \item under it, a comparison showing that simple inference levers do not
-        recover the loss and that moving the query to the event recovers about three of the 31 points while more computation at the next scheduled query recovers nothing measurable, with a learned per-step detector
+        recover the loss and that moving the query to the event recovers only a few of the 31 points while more computation at the next scheduled query recovers nothing measurable, with a learned per-step detector
         that recognizes 87--90\% of displacements on held-out initial states within three control steps;
   \item an event-gated residual recovery policy, trained as a privileged teacher by behavior cloning (BC) of a scripted
         shift followed by proximal policy optimization (PPO) and distilled into
-        a vision-only student, that adds 3.9 points over a fixed-rule shift on held-out initial states (4.7 on all 500),
+        a vision-only student, that adds 2.9 points over a fixed-rule shift in a pre-registered test on fresh initial states (3.9 on held-out ones),
         still gains with displacements twice as large and causes no measurable change in
         undisturbed success.\footnote{Code, trained modules and per-episode results:\newline \url{https://github.com/BitAdventurer/VLA-Disturbance-Recovery}}
 \end{itemize}
@@ -125,8 +125,7 @@ object is moved mid-episode~\cite{liu2025rl4vla}, or with offline RL to recover 
 compresses a chunk toward perceived motion~\cite{zhang2026pacepath}, the
 closest analogue of our fixed-rule shift; its authors name teleports as its weak case. TRANSIC gates a residual with a classifier learned from human interventions~\cite{jiang2024transic}; ours is zero except after a detected scene displacement,
 distilled from a privileged teacher into a vision-only student as
-in~\cite{ankile2024resip}, and compared with a fixed-rule shift on the same
-episodes.
+in~\cite{ankile2024resip}, and compared with a fixed-rule shift.
 
 % =====================================================================
 \section{Setting and Diagnosis}\label{sec:diag}
@@ -182,7 +181,7 @@ noisy. We compare every variant with the \emph{per-episode mean of the seven
 noise draws} of the base policy on the same 500 (task, initial state) episodes with the same disturbance, and report the mean
 paired difference with a task-stratified bootstrap 95\% interval (6,000
 resamples). Variants run once carry that draw's noise and resolve only
-differences of several points. Detector, regressor and teachers are each trained once and the students with three distillation seeds (the released one unless stated), all on initial states 0--24 only; initial states 25--49 of the same ten tasks (250 episodes, base 62.2\%) are held out from training for the main comparison (Fig.~\ref{fig:forest}); results on all 500 episodes include the training initial states. States 25--49 also served to choose gates, $\alpha$ and model versions, so they are held out from training but not from model selection. No new task is tested, and intervals are per comparison, without multiplicity correction.
+differences of several points. Detector, regressor and teachers are each trained once and the students with three distillation seeds (the released one unless stated), all on initial states 0--24 only; initial states 25--49 of the same ten tasks (250 episodes, base 62.2\%) are held out from training for the comparisons in Fig.~\ref{fig:forest}; results on all 500 episodes include the training initial states. States 25--49 also served to choose gates, $\alpha$ and model versions, so they are held out from training but not from model selection. We therefore tested the released pipeline once, under a pre-registered protocol, on 500 fresh episodes: states 50--99 of each task's full initial-state file, unused by any earlier rollout of ours (the benchmark uses 0--49; five base draws, two or three per method). No new task is tested, and intervals are per comparison, without multiplicity correction.
 
 % =====================================================================
 \section{Method}\label{sec:method}
@@ -221,9 +220,9 @@ alarms.
 
 \noindent\textbf{Scripted shift (privileged).}
 As a reference, once the simulator reports at a scheduled query that an object of interest has moved by $d$ since the reset (more than 2\,cm, not lifted), we add $\alpha d$ divided equally over the $kH$
-actions of the next $k$ queries ($0.5\,d$ is about 0.1 units per action),
-horizontal only and without interrupting the chunk. With $k=2$, $\alpha=1$ performs like $0.5$ (71.2\% and 72.2\% on all 500, one draw) and $\alpha=1.5$ worse (64.8\%), presumably by adding to the base policy's own partial correction. A vision-only counterpart, the \emph{fixed-rule shift}, replans at each detection and adds $0.5\,\hat d$ in the same way,
-with $\hat d$ from the displacement regressor below.
+actions of the next $k$ queries,
+horizontal only and without interrupting the chunk. With $k=2$, $\alpha=1$ performs like $0.5$ (71.2\% and 72.2\% on all 500, one draw) and $\alpha=1.5$ worse (64.8\%), presumably by adding to the base policy's own partial correction. A vision-only counterpart, the \emph{fixed-rule shift}, replans at each detection and adds $0.5\,\hat d$ likewise,
+with $\hat d$ from the regressor below.
 
 \noindent\textbf{Privileged teacher.}
 We then learn the correction with residual RL~\cite{johannink2019residual} on privileged state. Choosing the residual at each gated query is a sequential decision problem, as in our earlier RL work~\cite{ji2026hrl,ji2024sparse,ji2026agentic}. The teacher's 53 inputs are proprioception, a summary of the base chunk, the relative position, displacement and presence of up to three objects of interest, episode progress, gripper state, queries since the gate opened, the previous residual and a task one-hot. Its gate, checked at every scheduled query (no replan at the event),
@@ -246,11 +245,11 @@ $128\times128$ RGB frame pair of both cameras at the firing step (four ResNet bl
 2--10\,cm; on 1,499 events from held-out initial states, median error 1.6\,cm at a median
 displacement of 6.1\,cm, median direction error $9^\circ$). The student MLP sees the teacher's inputs with the object state replaced by $\hat d$, its norm and an active flag (36 inputs, fusing $\hat d$ with the base chunk~\cite{kang2026fusion}). It is
 distilled from the teacher's mean action with DAgger~\cite{ross2011dagger}:
-three rounds of two rollouts per training initial state under the student's gate
-and replan, the teacher's residual replacing the student's
+three rounds of two rollouts per training state under the student's gate,
+its residual replaced by the teacher's
 with probability $\beta=1,0.5,0$. Every gated query is labeled with
 the teacher's residual (zero where its gate is closed; 8,148
-labels) and the student is refit by least squares on $\Delta$.
+labels); the student is fit by least squares on $\Delta$.
 
 % =====================================================================
 \section{Results}\label{sec:results}
@@ -275,7 +274,7 @@ Fig.~\ref{fig:forest} (top, held out) shows fixed settings of the levers that ad
 \subsection{When to Replan: At the Event}\label{sec:event}
 The base policy already replans at the next scheduled query. On held-out episodes, spending $n=10$ steps on that query and up to two more (oracle event timing) gains nothing measurable ($+0.6$ [$-2.6$, $+4.1$]), whereas, with the same oracle, moving the query \emph{to} the displacement gains $+3.7$ at $(2,10)$ and $+4.5$ with $n=10$ on the three queries from it, the latter $+3.9$ [$+0.4$, $+7.3$] above the next-query variant. The learned detector realizes most of this without the
 oracle ($+2.8$ and $+4.2$; all 500: Table~\ref{tab:rec}) at $1.00\times$ and $1.02\times$ the policy-query time. In closed loop it detects 87--90\% of the displacements on held-out initial states within three control steps (98--100\% on training states), with 0.10--0.15 false alarms per disturbed episode, and leaves undisturbed success at
-95.2\% on all 500 (base 95.4\% at the same noise, 95.1\% over three draws).
+95.2\% on all 500 (base 95.4\%). On the fresh initial states its replan gains only $+0.2$ [$-2.4$, $+2.8$] (two draws; inconclusive), so the small gain above is not confirmed.
 
 \subsection{How Much to Correct: Residual Recovery}\label{sec:correct}
  On held-out episodes the privileged scripted shift and the fixed-rule shift by $0.5\,\hat d$, which adds a replan at each detection, gain about the same ($+6.1$ and $+5.7$, three draws each; Fig.~\ref{fig:forest}). With privileged $d$, the detector's replan plus the scripted shift reaches 71.3\% held out (three draws), $+6.4$ [$+2.9$, $+10.1$] above the replan alone: shifting the actions adds to replanning. Learning the correction
@@ -286,8 +285,8 @@ above its behavior-cloned start (70.8\%, one draw); PPO from scratch reaches 72.
 The distilled student comes within a few points of its teacher
 without any privileged input: 71.8\% held out ($+9.6$ [$+5.8$, $+13.4$], five draws;
 $-4.4$ [$-7.3$, $-1.6$] against the teacher with the same replan) and
-75.9\% on all 500 episodes (Table~\ref{tab:rec}; 75.9--76.8\% over three distillation seeds). Held out, it is $+3.9$ [$+0.9$, $+6.9$] above the fixed-rule shift and $+3.9$ [$+1.2$, $+6.8$] above the rule selected on training initial states among seven settings ($\alpha=0.5$ over $k=4$ queries, three draws; all 500: $+4.7$ and $+4.8$). On undisturbed episodes the
-student (active in 5\% through false alarms) scores 95.4\%, as does the base draw with the same noise (one episode flips each way); against three base draws it is $+0.3$ [$-1.0$, $+1.7$], so the 95\% interval excludes drops above about one point. Against the 32.6\,ms GPU policy query, the detector takes 0.4\,ms per control step, the regressor 2.2\,ms per detection and the student MLP 0.02\,ms per active query (two CPU threads; full loop not timed).
+75.9\% on all 500 episodes (Table~\ref{tab:rec}). Held out, it is $+3.9$ [$+0.9$, $+6.9$] above the fixed-rule shift and $+3.9$ [$+1.2$, $+6.8$] above the best of seven rules on training states ($\alpha=0.5$, $k=4$; all 500: $+4.7$, $+4.8$). On undisturbed episodes the
+student (active in 5\% through false alarms) scores 95.4\%, as does the base draw with the same noise (one episode flips each way); against three base draws it is $+0.3$ [$-1.0$, $+1.7$], so the 95\% interval excludes drops above about one point. In the pre-registered test on fresh initial states the student gains $+8.4$ [$+5.6$, $+11.2$] (73.7\% versus 65.4\%) and $+2.9$ [$+0.7$, $+5.1$] over the fixed-rule shift, which itself gains $+5.4$; undisturbed success changes by $-0.2$ [$-1.0$, $+0.4$] (one draw). Against the 32.6\,ms GPU policy query, the detector takes 0.4\,ms per control step, the regressor 2.2\,ms per detection and the student MLP 0.02\,ms per active query (two CPU threads; full loop not timed).
 
 \begin{table}[t]
 \caption{Recovery on 500 Disturbed and on Undisturbed Episodes (Bold: Vision-Only Student)}
@@ -315,8 +314,8 @@ Student without $\hat d$ & V & 2 & 74.5 & $+9.8$ [$+6.9$, $+12.7$] & 95.4 \\
 \end{table}
 
 \subsection{Other Disturbances and Side Effects}
-The student and detector were trained only on 4--6\,cm displacements, mostly during the approach (the regressor on 2--10\,cm); Fig.~\ref{fig:general} evaluates them unchanged on other disturbances (all 500 episodes). With 8--12\,cm displacements, where the base policy falls to 37.0\% (three draws), the student gains $+8.3$ [$+5.0$, $+11.5$] and the privileged teacher $+12.1$ (two draws each; $+5.8$ to $+8.8$ over three student seeds), while the fixed-rule shift gains only $+3.8$ (three draws). The student is $+4.5$ [$+1.5$, $+7.5$] above it ($+4.2$ above the selected rule, two draws). Beyond the regressor's 10\,cm training range the student still gains $+8.0$ [$+3.7$, $+12.4$] ($+7.7$ [$+1.9$, $+13.6$] on held-out initial states). On the other disturbances the student is neutral: for a late move of the nearest free object
-(steps 100--200) the detector fires in half of the episodes and the student's gain is within noise ($+1.4$), whereas the privileged teacher is slightly harmful ($-2.4$ [$-4.2$, $-0.5$], two draws each); for sliding (6--10\,cm planned, cut short when the gripper closes, so realized slides differ by method) and a five-step arm push the detector, trained on teleports, rarely fires (6--12\%) and success
+The student and detector were trained only on 4--6\,cm displacements, mostly during the approach (the regressor on 2--10\,cm); Fig.~\ref{fig:general} evaluates them unchanged on other disturbances (all 500 episodes). With 8--12\,cm displacements, where the base policy falls to 37.0\% (three draws), the student gains $+8.3$ [$+5.0$, $+11.5$] and the privileged teacher $+12.1$ (two draws each), while the fixed-rule shift gains only $+3.8$ (three draws). The student is $+4.5$ [$+1.5$, $+7.5$] above it ($+4.2$ above the selected rule, two draws). Beyond the regressor's 10\,cm training range the student still gains $+8.0$ [$+3.7$, $+12.4$] ($+7.7$ [$+1.9$, $+13.6$] on held-out initial states). On the other disturbances the student is neutral: for a late move of the nearest free object
+(steps 100--200) the detector fires in half of the episodes and the student's gain is within noise ($+1.4$), whereas the privileged teacher is slightly harmful ($-2.4$ [$-4.2$, $-0.5$], two draws each); for sliding (6--10\,cm planned, cut short when the gripper closes, so slides differ by method) and a five-step arm push the detector, trained on teleports, rarely fires (6--12\%) and success
 changes by at most 1.1 points. Undisturbed success is 95.2--95.6\% in every detector-gated variant measured: the detector gate bounds how often a residual can act, whereas the scripted shift's cumulative gate costs 4.6 points (90.8\%).
 
 \begin{figure}[t]
@@ -335,14 +334,10 @@ intervals, bold when excluding zero. }
 \end{figure}
 
 \subsection{Ablation: Displacement Estimate}
-A student distilled without $\hat d$ is only slightly worse than the full student on all 500 episodes ($-1.4$ [$-3.5$, $+0.9$], two draws; $-1.4$ to $-2.8$ over three distillation seeds): at 4--6\,cm the detector tells it \emph{when}, while the base chunk, proprioception and the task input may tell it \emph{how}. At 8--12\,cm $\hat d$ helps in two of three seeds (without it: $-3.9$ [$-6.5$, $-1.3$], two draws; other seeds $-6.0$ and $+0.8$). It does not make the correction proportional: held out, from 4--6 to 8--12\,cm displacements the student's shift along the displacement grows only from 2.3 to 3.2\,cm (the teacher's from 3.3 to 9.2\,cm), as the regressor saturates near 6\,cm.
+A student distilled without $\hat d$ is only slightly worse than the full student on all 500 episodes ($-1.4$ [$-3.5$, $+0.9$], two draws; $-1.4$ to $-2.8$ over three distillation seeds): at 4--6\,cm the detector tells it \emph{when}, while the base chunk, proprioception and the task input may tell it \emph{how}. At 8--12\,cm $\hat d$ helps in two of three seeds (without it $-3.9$ [$-6.5$, $-1.3$], two draws; other seeds $-6.0$, $+0.8$). It does not make the correction proportional: held out, from 4--6 to 8--12\,cm the student's shift along the displacement grows only from 2.3 to 3.2\,cm (the teacher's from 3.3 to 9.2\,cm), as $\hat d$ saturates near 6\,cm.
 
 \subsection{Where the Residual Helps and Where It Fails}
-Gains concentrate where the approach triggers the event: held out, the student gains $+12.3$ [$+7.6$, $+17.1$] on the 179 approach-triggered episodes but $+2.7$ [$-2.6$, $+7.9$] on the 71 where the time fallback moves an object before the gripper nears it; there the privileged teacher still gains $+8.1$ and the detector's replan alone $-1.8$. The residual was active in 91\% of the student's remaining failures (85\% held out), so few are due to missed detections; the correction itself, labeled zero where the teacher's gate stayed closed, is a likely bottleneck.
-
-
-
-In Fig.~\ref{fig:qual} the mug is displaced 5.1\,cm at $t=47$; the policy alone closes the gripper at the old position and knocks the mug over, whereas with the detector and student a new chunk arrives one step later and the mug is grasped at $t=97$. Although $\hat d$ is poor (1\,cm, wrong direction), the correction points toward the mug, so it may come from the base chunk or a task-level push.
+Gains concentrate where the approach triggers the event: held out, the student gains $+12.3$ [$+7.6$, $+17.1$] on the 179 approach-triggered episodes but $+2.7$ [$-2.6$, $+7.9$] on the 71 triggered by the time fallback (fresh states: $+11.3$ and $-0.1$). The residual was active in 85\% of the student's remaining held-out failures, so few are due to missed detections; the correction itself, labeled zero where the teacher's gate stayed closed, is a likely bottleneck. In Fig.~\ref{fig:qual}, although $\hat d$ is poor (1\,cm, wrong direction), the correction points toward the mug, so it may come from the base chunk or a task-level push.
 
 
 % =====================================================================
@@ -350,8 +345,8 @@ In Fig.~\ref{fig:qual} the mug is displaced 5.1\,cm at $t=47$; the policy alone 
 % =====================================================================
 
 When the object it approaches is suddenly displaced, $\pi_{0.5}$ often first closes the gripper
-nearer its old position and loses 31 points. Replanning at the detected event recovers about three points, a
-fixed-rule shift about six, and an event-gated residual (cloned, refined with RL, distilled to vision) about ten (held-out initial states) to eleven (all 500). The gate keeps this cheap post-training conservative: undisturbed success shows no measurable change, whereas a loosely gated teacher cut it to 73.6\% on held-out states. Limitations are one policy, benchmark and task set, teleports, synchronous simulation, mostly single training runs, PPO's share measured only for the teacher, and held-out states reused for model selection. Next, we test whether the correction tracks the displacement or acts partly as a task-level push, compare it with fine-tuning, and add physical disturbances, asynchronous execution, an end-to-end gate, possibly multi-agent~\cite{shin2024mars}, and hardware.
+nearer its old position and loses 31 points. Replanning at the detected event recovers zero to three points, a
+fixed-rule shift about six, and an event-gated residual (cloned, refined with RL, distilled to vision) about eight on fresh initial states (ten held out, eleven on all 500). The gate keeps this cheap post-training conservative: undisturbed success shows no measurable change, whereas a loosely gated teacher cut it to 73.6\%. Limitations are one policy, benchmark and task set, teleports, synchronous simulation, mostly single training runs, PPO's share measured only for the teacher, and held-out states reused for selection. Next, we test if the correction tracks the displacement or acts as a task-level push, compare with fine-tuning, and add physical disturbances, asynchronous execution, an end-to-end gate, possibly multi-agent~\cite{shin2024mars}, and hardware.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs_res}

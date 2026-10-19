@@ -382,8 +382,12 @@ def _run_one(slot, ep, b):
                               disabled=b.get("disabled", False), script=b.get("bc"), gate=getattr(_W["args"], "gate", "cum"))
     sched = R.Schedule(a.schedule, a.n, a.h, react_setting=tuple(int(x) for x in a.react_setting.split(",")))
 
+    if not 0 <= init_id < len(slot.init_states):        # was a silent modulo wrap (50 -> 0); identical for valid ids
+        raise IndexError("init %d outside the %d loaded initial states (states 50-99 need --init_file full)"
+                         % (init_id, len(slot.init_states)))
+
     def run():
-        slot.env._init_state = slot.init_states[init_id % len(slot.init_states)]
+        slot.env._init_state = slot.init_states[init_id]
         slot.env.seed(R.sim_seed(key))
         slot.resets += 1
         return R.run_episode(slot.env, _W["policy"], slot.description, sched, None, a, _W["tools"], None,
@@ -713,7 +717,14 @@ def main():
     p.add_argument("--drift_steps", type=int, default=60)
     p.add_argument("--push_steps", type=int, default=5)
     p.add_argument("--mock", action="store_true")
+    p.add_argument("--init_file", default="pruned", choices=["pruned", "full"],
+                   help="initial states: pruned = the benchmark's 50 (default, as before); full = all 100 of <task>.init, "
+                        "evaluation only (one-time fresh-state test, experiments/bok/prereg_fresh50.md)")
     a = p.parse_args()
+    if a.init_file == "full" and not a.eval:
+        raise SystemExit("--init_file full is for evaluation only")
+    if a.eval and not 0 <= a.eval_init_lo < a.eval_init_hi <= (100 if a.init_file == "full" else 50):
+        raise SystemExit("--eval_init_lo/--eval_init_hi outside the loaded initial states (%s)" % a.init_file)
     base = R.build_parser().parse_args([])                    # every run_libero default (identical behaviour)
     for k, v in vars(a).items():
         setattr(base, k, v)
