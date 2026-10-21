@@ -73,8 +73,9 @@ and the held-out initial states also served model selection (see the paper's Con
 and Figs. 2–3 is recomputed from the result files in this repository (see below). The few remaining numbers come
 from the files next to the modules (`experiments/bok/*.json`, `experiments/ckpt/*.log.jsonl`,
 `experiments/latency.json`, and `experiments/module_latency.json` from `scripts/measure_modules.py` for the
-module times in Sec. V-C) and from `paper_outputs/calib_signals.txt`; Table I comes from separate tracking runs
-analysed with `scripts/diag_grasp.py`.
+module times in Sec. V-C) and from `paper_outputs/calib_signals.txt`; Table I comes from tracking runs of the base policy
+(every executed step logged, initial states 0–9 of each task; `experiments/results_res/diag_{a,b,c}.jsonl`) analysed
+with `scripts/diag_grasp.py`.
 
 <p align="center"><img src="assets/qual.png" width="760" alt="One held-out episode: base policy (timeout) and residual student (success)"></p>
 
@@ -113,6 +114,7 @@ python scripts/table_pertask.py out          # tables/res_pertask.tex, figures/r
 diff out/figures/res_numbers.json paper_outputs/res_numbers.json
 diff out/figures/res_analysis.json paper_outputs/res_analysis.json
 diff out/tables/res_pertask.tex paper_outputs/res_pertask.tex
+python scripts/diag_grasp.py                 # Table I: success and failure columns (100 tracked episodes)
 ```
 
 `scripts/compare_res.py` and `scripts/analyze_res.py` give paired comparisons between any two arms, for example
@@ -174,6 +176,26 @@ $LIBERO_PY residual_rl.py --ports 8000,8001 --workers_per_port 5 --eval ckpt/res
 Add `--eval_disturb none` for undisturbed episodes, `--disturb_mag 0.08,0.12` for twice-as-large displacements,
 and `--eval_noise_salt k` for further noise draws.
 
+**Table I tracking runs** (the base policy with every executed step logged, initial states 0–9):
+
+```bash
+$LIBERO_PY run_libero.py --port 8000 $OBJ --log_exec 1 --tasks 0,1,2,3 --trials 10 --out results_res/diag_a.jsonl
+$LIBERO_PY run_libero.py --port 8001 $OBJ --log_exec 1 --tasks 4,5,6 --trials 10 --out results_res/diag_b.jsonl
+$LIBERO_PY run_libero.py --port 8000 $OBJ --log_exec 1 --tasks 7,8,9 --trials 10 --out results_res/diag_c.jsonl
+```
+
+**Pre-registered fresh-state test** (initial states 50–99 of each task's full `.init` file, `--init_file full`;
+arms, noise salts and the completeness check as in `experiments/bok/run_fresh50.sh` and `prereg_fresh50.md`):
+
+```bash
+F="--ports 8000,8001 --workers_per_port 5 --init_file full --eval_init_lo 50 --eval_init_hi 100"
+$LIBERO_PY residual_rl.py $F --eval zero --eval_noise_salt 0 --eval_out results_test/fresh_base_s0.jsonl
+$LIBERO_PY residual_rl.py $F --eval student:ckpt/student_v2.pt --dispreg bok/dispreg_v2_t24.pt $DET --gate jump \
+    --eval_noise_salt 0 --eval_out results_test/fresh_student_s0.jsonl
+$LIBERO_PY residual_rl.py $F --eval vision:0.5,2 --dispreg bok/dispreg_v2_t24.pt $DET --eval_noise_salt 0 \
+    --eval_out results_test/fresh_fixed_s0.jsonl
+```
+
 **Train the modules.**
 
 ```bash
@@ -213,6 +235,8 @@ unchanged. Where each result comes from:
 | Detector replan with the scripted shift (three draws), teacher with the detector replan (Sec. V-C) | `run_chain7_reviewcheck.sh` |
 | Scripted shift and its α sweep | `run_probe.sh` |
 | Table II on all 500 episodes, longer fixed-rule windows, extra draws, distillation seeds, openpi's (10, 5) (pre-registered in `experiments/bok/prereg_ext.md`) | `run_chain8_extension.sh`, `run_chain8b_b6.sh`, `run_chain8c_b2s2.sh` |
+| Failure tracking (Table I) | the tracking runs above (`--log_exec 1`), `diag_grasp.py` |
+| Pre-registered fresh-state test (initial states 50–99) | `experiments/bok/run_fresh50.sh`, analysis block in `fig_paper.py` |
 | Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py` |
 
 ## Citation
