@@ -344,9 +344,9 @@ Gains concentrate where the approach triggers the event: held out, the student g
 \section{Conclusion}
 % =====================================================================
 
-When the object it approaches is suddenly displaced, $\pi_{0.5}$ often first closes the gripper
+When the target object is displaced, $\pi_{0.5}$ often first closes the gripper
 nearer its old position and loses 31 points. Replanning at the detected event recovers zero to three points, a
-fixed-rule shift about six, and an event-gated residual (cloned, refined with RL, distilled to vision) about eight on fresh initial states (ten held out, eleven on all 500). The gate keeps this cheap post-training conservative: undisturbed success shows no measurable change, whereas a loosely gated teacher cut it to 73.6\%. Limitations are one policy, benchmark and task set, teleports, synchronous simulation, mostly single training runs, PPO's share measured only for the teacher, and held-out states reused for selection. Next, we test if the correction tracks the displacement or acts as a task-level push, compare with fine-tuning, and add physical disturbances, asynchronous execution, an end-to-end gate, possibly multi-agent~\cite{shin2024mars}, and hardware.
+fixed-rule shift about six, and, on fresh initial states, the event-gated residual student about eight. Gating keeps this post-training conservative: undisturbed success shows no measurable change, whereas a loosely gated teacher cut it to 73.6\%. Limitations are one policy, benchmark and task set, and mostly single training runs. Needing no object state and little CPU time, the modules could run beside a robot's VLA, like TRANSIC's residual beside a simulation-trained policy~\cite{jiang2024transic}. Open sim-to-real gaps are rendered training frames, teleported rather than physical displacements, and synchronous execution; next, we probe them on hardware, test whether the correction tracks the displacement and try an end-to-end, possibly multi-agent gate~\cite{shin2024mars}.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs_res}
