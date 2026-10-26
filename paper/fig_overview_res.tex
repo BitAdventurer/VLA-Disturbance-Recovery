@@ -108,7 +108,7 @@
 \node[box, fill=creg!15, draw=creg!70!black, minimum width=1.9cm] (reg) at (\xb+1.7,-1.25)
   {displacement regressor\\ CNN on the event frames};
 \node[box, fill=cres!15, draw=cres!70!black, minimum width=1.9cm] (res) at (\xb+5.9,-1.25)
-  {residual MLP\\ $\Delta=\mathbf{s}\odot\tanh u(x)$};
+  {residual MLP\\ $\Delta=\mathbf{s}\odot\tanh u(\tilde x)$};
 \node[circle, draw=black!60, line width=0.4pt, inner sep=0pt, minimum size=0.26cm, font=\scriptsize] (sum)
   at (\xb+7.75,-0.6) {$+$};
 \node[box, fill=black!5, minimum height=1.9cm, minimum width=0.5cm, inner sep=1pt] (rob) at (\xb+8.45,-0.6)
@@ -125,7 +125,7 @@
 \draw[flow] (res.east) -| (sum.south);
 \draw[flow] (sum) -- (rob);
 \node[lbl, anchor=north, align=center] at (\xb+4.35,-1.7)
-  {$x$: proprio, chunk statistics, $\hat d$, queries since the event, task};
+  {$\tilde x$: proprio, chunk statistics, $\hat d$, queries since the event, task};
 
 % training strip
 \node[box, fill=white, inner sep=1.5pt, align=left] (train)

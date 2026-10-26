@@ -24,7 +24,10 @@ rng = np.random.default_rng(0)
 plt.rcParams.update({"font.size": 7, "axes.labelsize": 7, "axes.titlesize": 7.5, "xtick.labelsize": 6.5,
                      "ytick.labelsize": 6.5, "legend.fontsize": 6.5, "pdf.fonttype": 42, "ps.fonttype": 42,
                      "axes.linewidth": 0.5, "xtick.major.width": 0.5, "ytick.major.width": 0.5,
-                     "font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"]})
+                     "font.family": "sans-serif", "font.sans-serif": ["Helvetica", "Arial", "DejaVu Sans"],
+                     # math labels in the text font, not matplotlib's default DejaVu
+                     "mathtext.fontset": "custom", "mathtext.rm": "Arial", "mathtext.sf": "Arial",
+                     "mathtext.it": "Arial:italic", "mathtext.bf": "Arial:bold", "mathtext.fallback": "stixsans"})
 # Okabe-Ito
 BLUE, ORANGE, GREEN, SKY, VERM, PURPLE, GREY, YELLOW = ("#0072B2", "#E69F00", "#009E73", "#56B4E9", "#D55E00",
                                                          "#CC79A7", "#7F7F7F", "#F0E442")
@@ -100,17 +103,17 @@ arms = [
     ("sel8_random", "best-of-8 chunks: random", [RB("sel8_random")], "lever", False),
     ("sel8_medoid", "best-of-8 chunks: medoid", [RB("sel8_medoid")], "lever", False),
     ("sel8_priv", "best-of-8: object aim (priv.)", [RB("sel8_priv")], "lever", False),
-    ("react_next", "next query, then $n{=}10$ (oracle)", [RD("obj_react_next_n10h10_s0"), RD("obj_react_next_n10h10_ns1_s0")], "timing", False),
+    ("react_next", "next query, then $n\\,{=}\\,10$ (oracle)", [RD("obj_react_next_n10h10_s0"), RD("obj_react_next_n10h10_ns1_s0")], "timing", False),
     ("react_now_2", "at the event, $(2,10)$ (oracle)", [RD("obj_react_now_n2h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
-    ("react_now_10", "at the event, then $n{=}10$ (oracle)", [RD("obj_react_now_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
+    ("react_now_10", "at the event, then $n\\,{=}\\,10$ (oracle)", [RD("obj_react_now_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
     ("det_2", "detector $\\rightarrow$ replan, $(2,10)$", [RD("det_n2h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0", "ns3_s0", "ns4_s0")], "timing", False),
-    ("det_10", "detector $\\rightarrow$ replan, then $n{=}10$", [RD("det_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
+    ("det_10", "detector $\\rightarrow$ replan, then $n\\,{=}\\,10$", [RD("det_n10h10_%s" % s) for s in ("s0", "ns1_s0", "ns2_s0")], "timing", False),
     ("scripted", "scripted shift $0.5\\,d$ (priv.)", [RR("probe_s05_k2")] + [(RR("probe_s05_k2_ns%d" % s), RR("probe_s05_k2_tr_ns%d" % s)) for s in (1, 2)], "residual", False),
-    ("vision_scripted", "fixed-rule shift $0.5\\,\\widehat{d}$", [RR("vision_s05_k2"), RR("vision_s05_k2_ns1"), RR("vision_s05_k2_ns2")], "residual", False),
+    ("vision_scripted", "fixed-rule shift $0.5\\,\\hat{d}$", [RR("vision_s05_k2"), RR("vision_s05_k2_ns1"), RR("vision_s05_k2_ns2")], "residual", False),
     ("teacher_bc", "teacher: BC only (priv.)", [RR("eval_res_v4_bc")], "residual", True),
     ("teacher_scratch", "teacher: PPO from scratch (priv.)", [RR("abl_scratch_it039"), RR("abl_scratch_it039_ns1")], "residual", True),
     ("teacher", "teacher: BC + PPO (priv.)", TEACHER_DRAWS, "residual", False),
-    ("student_nodhat", "student without $\\widehat{d}$", [RR("abl_student_nodhat"), RR("abl_student_nodhat_ns1")], "residual", True),
+    ("student_nodhat", "student without $\\hat{d}$", [RR("abl_student_nodhat"), RR("abl_student_nodhat_ns1")], "residual", True),
     ("student", "residual student (vision)", [RR("student_v2"), RR("student_v2_ns1"), RR("student_v2_ns2"), RR("student_v2_ns3"), RR("student_v2_ns4")], "residual", False),
 ]
 forest = {}
@@ -138,7 +141,6 @@ for key, lab, paths, grp, hollow in rows:
             y += 0.35
         ytick.append(y); ylab.append(names[grp]); header_rows.append((len(ytick) - 1, grp)); y += 1
     last_grp = grp
-    y += 0.3 * ("widehat" in lab)     # room for the hat of d-hat below the row above
     r = forest[key]["heldout"]
     m, lo, hi = r["delta"], r["lo"], r["hi"]
     ax.errorbar(m, y, xerr=[[m - lo], [hi - m]], fmt="o", ms=3.0, color=col[grp], mfc="white" if hollow else col[grp],
@@ -214,7 +216,7 @@ fig, ax = plt.subplots(figsize=(3.45, 1.9))
 xs = np.arange(len(gen))
 w = 0.26
 labels = [gen[c]["label"] for c in gen]
-for i, (ak, lab, c, off) in enumerate([("baseline", "$\\pi_{0.5}$ alone", GREY, -w),
+for i, (ak, lab, c, off) in enumerate([("baseline", "π$_{0.5}$ alone", GREY, -w),
                                         ("student", "+ student (vision only)", GREEN, 0),
                                         ("teacher", "+ teacher (privileged)", BLUE, w)]):
     vals, err_lo, err_hi, xpos = [], [], [], []

@@ -336,7 +336,7 @@
    }
   },
   "react_next": {
-   "label": "next query, then $n{=}10$ (oracle)",
+   "label": "next query, then $n\\,{=}\\,10$ (oracle)",
    "group": "timing",
    "heldout": {
     "success": 62.8,
@@ -444,7 +444,7 @@
    }
   },
   "react_now_10": {
-   "label": "at the event, then $n{=}10$ (oracle)",
+   "label": "at the event, then $n\\,{=}\\,10$ (oracle)",
    "group": "timing",
    "heldout": {
     "success": 66.7,
@@ -552,7 +552,7 @@
    }
   },
   "det_10": {
-   "label": "detector $\\rightarrow$ replan, then $n{=}10$",
+   "label": "detector $\\rightarrow$ replan, then $n\\,{=}\\,10$",
    "group": "timing",
    "heldout": {
     "success": 66.4,
@@ -660,7 +660,7 @@
    }
   },
   "vision_scripted": {
-   "label": "fixed-rule shift $0.5\\,\\widehat{d}$",
+   "label": "fixed-rule shift $0.5\\,\\hat{d}$",
    "group": "residual",
    "heldout": {
     "success": 67.9,
@@ -826,7 +826,7 @@
    }
   },
   "student_nodhat": {
-   "label": "student without $\\widehat{d}$",
+   "label": "student without $\\hat{d}$",
    "group": "residual",
    "heldout": {
     "success": 70.6,

@@ -136,15 +136,15 @@ A flow-based VLA maps an observation $o_t$ and instruction $\ell$ to a
 chunk $\mathbf{A}_t=(a_t,\dots,a_{t+H-1})$ by conditional generation~\cite{lipman2022flow,oh2026ptdiff}, integrating a learned velocity
 field for $n$ Euler steps~\cite{black2024pi0}; the robot
 executes $h\le H$ actions and queries again. We use the released $\pi_{0.5}$ LIBERO checkpoint of openpi~\cite{pi05} with
-$H=10$ and, unless stated otherwise, $(n,h)=(2,10)$ (95.4\% undisturbed in one draw, 95.1\% over three); openpi's example setting $(10,5)$ reaches 91.9\% (three draws) at $2.8\times$ the policy-query time and loses as much as $(2,10)$ under the displacement defined below (to 61.2\%, two draws). \emph{Policy-query time} sums, over an episode's queries, the round-trip latency of each query's setting, measured offline on one RTX 5090 (32.6\,ms at $n=2$, 44.1\,ms at $n=10$); it is an accounting figure, as simulation is synchronous.
+$H=10$ and, by default, $(n,h)=(2,10)$ (95.4\% undisturbed in one draw, 95.1\% over three); openpi's example setting $(10,5)$ reaches 91.9\% (three draws) at $2.8\times$ the policy-query time and loses as much as $(2,10)$ under the displacement below (to 61.2\%, two draws). \emph{Policy-query time} sums, over an episode's queries, the round-trip latency of each query's setting, measured offline on one RTX 5090 (32.6\,ms at $n=2$, 44.1\,ms at $n=10$); it is an accounting figure, as simulation is synchronous.
 Episodes follow the released script (520
 control steps at 20\,Hz after 10 settling steps) on the 50 fixed initial
-states of each of the ten tasks, 500 episodes per run.
+states of each of the ten tasks.
 
 The \emph{object displacement} is applied once per episode: when the open gripper first comes within 12\,cm (end effector to object center)
 of a movable object of interest (an object named in the task goal) that it
 does not hold, that object is teleported horizontally by a distance drawn from
-$[4,6]$\,cm in a uniformly random direction and its velocity is zeroed. If no approach has occurred by a random step in 50--170 (about 26\% of episodes, mostly in two tasks), the nearest free object of interest is displaced at that step. Direction and magnitude are seeded by the task and initial state, so every method sees identical displacement vectors. Each method run other than the static schedules also reuses the sampling-noise seed of one base draw and matches it in event step and displaced object in every episode, although a few pre-event trajectories differ; across base draws and static schedules the event step differs in 27\% and 46--56\% of episodes, respectively, mostly by one step. Success drops to 64.7\% (mean of seven noise draws), and every
+$[4,6]$\,cm in a uniformly random direction and its velocity is zeroed. If no approach has occurred by a random step in 50--170 (about 26\% of episodes, mostly in two tasks), the nearest free object of interest is displaced at that step. Direction and magnitude are seeded per task and initial state, so every method sees the same vectors. Each method run other than the static schedules also reuses the sampling-noise seed of one base draw and matches it in event step and displaced object in every episode, although a few pre-event trajectories differ; across base draws and static schedules the event step differs in 27\% and 46--56\% of episodes, respectively, mostly by one step. Success drops to 64.7\% (mean of seven noise draws); every
 failure is a timeout.
 
 \subsection{Why the Policy Fails}
@@ -176,11 +176,10 @@ Motion toward old / new position$^{\mathrm{a}}$ & 0.69 / 0.60 & 0.26 / 0.39 \\
 \subsection{Evaluation Protocol}\label{sec:protocol}
 Flow-based policies sample the initial noise of the integration, and this
 noise alone moves the success of $(2,10)$ on the disturbed episodes between
-63.2\% and 67.8\% across seven seeds (``noise draws''), so single draws are
-noisy. We compare every variant with the \emph{per-episode mean of the seven
+63.2\% and 67.8\% across seven seeds (``noise draws''). We compare every variant with the \emph{per-episode mean of the seven
 noise draws} of the base policy on the same 500 (task, initial state) episodes with the same disturbance, and report the mean
 paired difference with a task-stratified bootstrap 95\% interval (6,000
-resamples). Variants run once carry that draw's noise and resolve only
+resamples). Variants run once carry their single draw's noise and resolve only
 differences of several points. Detector, regressor and teachers are each trained once and the students with three distillation seeds (the released one unless stated), all on initial states 0--24 only; initial states 25--49 of the same ten tasks (250 episodes, base 62.2\%) are held out from training for the comparisons in Fig.~\ref{fig:forest}; results on all 500 episodes include the training initial states. States 25--49 also served to choose gates, $\alpha$ and model versions, so they are held out from training but not from model selection. We therefore tested the released pipeline once, under a pre-registered protocol, on 500 fresh episodes: states 50--99 of each task's full initial-state file, unused by any earlier rollout of ours (the benchmark uses 0--49; five base draws, two or three per method). No new task is tested, and intervals are per comparison, without multiplicity correction.
 
 % =====================================================================
@@ -188,14 +187,9 @@ differences of several points. Detector, regressor and teachers are each trained
 % =====================================================================
 
 \subsection{Detecting the Displacement and Replanning at Once}
-The detector runs beside the controller at every control step and
-receives, for each of the two cameras (third-person and wrist), the
-previous frame, the current frame and their difference at $64\times64$
-grayscale, together with the action executed between them and the measured
-end-effector motion; a four-layer CNN and a small MLP fuse these into one
+Running beside the controller, the detector receives at every control step, for both cameras (third-person and wrist), the previous and current frames and their difference at $64\times64$ grayscale, plus the action executed between them and the measured end-effector motion; a four-layer CNN and a small MLP fuse these into one
 logit (0.1\,M parameters). Positives are the frame pairs straddling a displacement, hard negatives the pairs within 15
-steps of it, plus 130 undisturbed training-state episodes; training uses the 500 events of
-two disturbed runs on the training initial states, and the threshold is set for 0.05 false alarms per episode on 120 further undisturbed training-state episodes.
+steps of it, plus 130 undisturbed training-state episodes; training uses the 500 events of two disturbed training-state runs, and the threshold is set for 0.05 false alarms per episode on 120 further undisturbed training-state episodes.
 
 When the logit crosses the threshold, the schedule interrupts the current
 chunk and queries the policy immediately, so within a few control steps of
@@ -219,9 +213,7 @@ a detected displacement, so undisturbed behavior is touched only on false
 alarms.
 
 \noindent\textbf{Scripted shift (privileged).}
-As a reference, once the simulator reports at a scheduled query that an object of interest has moved by $d$ since the reset (more than 2\,cm, not lifted), we add $\alpha d$ divided equally over the $kH$
-actions of the next $k$ queries,
-horizontal only and without interrupting the chunk. With $k=2$, $\alpha=1$ performs like $0.5$ (71.2\% and 72.2\% on all 500, one draw) and $\alpha=1.5$ worse (64.8\%), presumably by adding to the base policy's own partial correction. A vision-only counterpart, the \emph{fixed-rule shift}, replans at each detection and adds $0.5\,\hat d$ likewise,
+As a reference, once the simulator reports at a scheduled query that an object of interest has moved by $d$ since the reset (more than 2\,cm, not lifted), we add a nominal $\alpha d$ of end-effector motion, split over the $kh$ actions from this query on, horizontal only and without interrupting the chunk. With $k=2$, $\alpha=1$ performs like $0.5$ (71.2\% and 72.2\% on all 500, one draw) and $\alpha=1.5$ worse (64.8\%), presumably by adding to the base policy's own partial correction. A vision-only counterpart, the \emph{fixed-rule shift}, replans at each detection and adds $0.5\,\hat d$ likewise,
 with $\hat d$ from the regressor below.
 
 \noindent\textbf{Privileged teacher.}
@@ -229,11 +221,8 @@ We then learn the correction with residual RL~\cite{johannink2019residual} on pr
 opens when an object has jumped more than 2.5\,cm since the previous query
 while it rests within 1.5\,cm of its initial height and the open gripper is over 5\,cm away, and closes once the object is lifted 3\,cm. It
 opens in 85\% of disturbed and in none of 250 undisturbed held-out episodes;
-a cumulative 2-cm gate opened in 54\% of the undisturbed ones and, with a learned teacher behind it (trained, like ours, only on disturbed episodes), cut their
-success to 73.6\%. The actor is Gaussian over $u$ (initial standard deviation 0.30). We first clone the
-scripted shift ($\alpha=0.5$, $k=2$) from about 450 episodes, then run PPO with generalized advantage
-estimation~\cite{schulman2016gae} (settings in the code release) for 40 iterations of 120 episodes on the
-training initial states. The reward is the episode success minus $0.01\,\|\Delta/\mathbf{s}\|^2$ per gated query, with a fixed rather than adaptive weight~\cite{ji2026moreward,hwang2026arw}; one run takes about two GPU-hours.
+a cumulative 2-cm gate opened in 54\% of the undisturbed ones and, with a learned teacher (trained, like ours, only on disturbed episodes), cut their
+success to 73.6\%. At gated query $i$ the actor samples $z_i\sim\mathcal{N}(u_\theta(x_i),\operatorname{diag}\boldsymbol{\sigma}^2)$ ($\boldsymbol{\sigma}$ initially 0.30) and applies $\Delta_i=\mathbf{s}\odot\tanh z_i$. We first clone the scripted residual $\Delta^{\mathrm{sh}}_i$ ($\alpha=0.5$, $k=2$, triggered by the teacher's gate) from 441 episodes by minimizing \eqref{eq:bc} ($\oslash$: element-wise division), then run PPO with generalized advantage estimation~\cite{schulman2016gae} (settings in the code release) for 40 iterations of 120 episodes on the training initial states, maximizing \eqref{eq:ppo} with success $R\in\{0,1\}$ at the last of $T$ gated queries, $\gamma=0.99$ and a fixed rather than adaptive weight $c=0.01$~\cite{ji2026moreward,hwang2026arw}; one run takes about two GPU-hours.
 
 \noindent\textbf{Vision-only student.}
 The student may use neither object positions nor the privileged
@@ -241,15 +230,14 @@ gate. Its gate is the learned detector, active for six queries after each
 detection; a firing inside the window restarts it, and every firing, true or
 false, costs one replan. When the detector fires, a \emph{displacement
 regressor} estimates the horizontal displacement $\hat d$ from the
-$128\times128$ RGB frame pair of both cameras at the firing step (four ResNet blocks, 0.5\,M parameters, trained on 1,499 training-state events of
+$128\times128$ RGB frame pairs of both cameras, the executed action and the end-effector motion at the firing step (four ResNet blocks, 0.5\,M parameters, trained on 1,499 training-state events of
 2--10\,cm; on 1,499 events from held-out initial states, median error 1.6\,cm at a median
-displacement of 6.1\,cm, median direction error $9^\circ$). The student MLP sees the teacher's inputs with the object state replaced by $\hat d$, its norm and an active flag (36 inputs, fusing $\hat d$ with the base chunk~\cite{kang2026fusion}). It is
-distilled from the teacher's mean action with DAgger~\cite{ross2011dagger}:
-three rounds of two rollouts per training state under the student's gate,
-its residual replaced by the teacher's
-with probability $\beta=1,0.5,0$. Every gated query is labeled with
-the teacher's residual (zero where its gate is closed; 8,148
-labels); the student is fit by least squares on $\Delta$.
+displacement of 6.1\,cm, median direction error $9^\circ$). The student MLP $u_\phi$ sees the teacher's inputs with the object state replaced by $\hat d$, its norm and an active flag (36 inputs $\tilde x$, fusing $\hat d$ with the base chunk~\cite{kang2026fusion}). It is trained with DAgger~\cite{ross2011dagger} to match the teacher's greedy residual $\Delta^\star_i=\mathbf{s}\odot\tanh u_\theta(x_i)$, zero outside the teacher's gate, in three rounds of two rollouts per training state (10\% undisturbed) under the student's gate, its residual replaced at each gated query by the teacher's with probability $\beta=1,0.5,0$. Round $r$ minimizes \eqref{eq:distill} over the student-gated queries $\mathcal{D}_{\le r}$ of rounds up to $r$ (8,148 labels after three). The three objectives are
+\begin{align}
+\mathcal{L}_{\mathrm{BC}}(\theta)&=\textstyle\sum_i\big\|u_\theta(x_i)-\operatorname{artanh}(\Delta^{\mathrm{sh}}_i\oslash\mathbf{s})\big\|^2,\label{eq:bc}\\
+J(\theta)&=\mathbb{E}\big[\gamma^{T-1}R-c\textstyle\sum_{i=0}^{T-1}\gamma^{i}\|\Delta_i\oslash\mathbf{s}\|^2\big],\label{eq:ppo}\\
+\mathcal{L}_{\mathrm{DAgger}}(\phi)&=\textstyle\sum_{i\in\mathcal{D}_{\le r}}\big\|\mathbf{s}\odot\tanh u_\phi(\tilde x_i)-\Delta^\star_i\big\|^2.\label{eq:distill}
+\end{align}
 
 % =====================================================================
 \section{Results}\label{sec:results}
@@ -329,7 +317,7 @@ intervals, bold when excluding zero. }
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figures/res_qual.pdf}
-\caption{One episode of the mug-and-pudding task from a held-out initial state, with the same sampling noise in both rows; $t$ is the control step. Top: the base policy alone (timeout). Bottom: with the detector and residual student (success).}
+\caption{One episode of the mug-and-pudding task from a held-out initial state, with the same sampling noise in both rows; $t$: control step. Top: base policy alone (timeout). Bottom: with the detector and residual student (success).}
 \label{fig:qual}
 \end{figure}
 
