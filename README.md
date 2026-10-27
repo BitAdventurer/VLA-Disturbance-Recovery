@@ -79,6 +79,12 @@ with `scripts/diag_grasp.py`.
 
 <p align="center"><img src="assets/qual.png" width="760" alt="One held-out episode: base policy (timeout) and residual student (success)"></p>
 
+The same episode as a video (left: π0.5 alone; right: with the detector and the residual student; *t* is the control
+step at 20 Hz). The replay is pixel-identical to the frames in Fig. 4. MP4: [real time](assets/fig4_episode.mp4),
+[half speed](assets/fig4_episode_halfspeed.mp4).
+
+<p align="center"><a href="assets/fig4_episode.mp4"><img src="assets/fig4_episode.gif" width="760" alt="Video of the Fig. 4 episode: the base policy closes at the old mug position and times out; the residual student detects the displacement, replans, shifts toward the mug and completes the task"></a></p>
+
 ## Repository layout
 
 ```
@@ -237,7 +243,7 @@ unchanged. Where each result comes from:
 | Table II on all 500 episodes, longer fixed-rule windows, extra draws, distillation seeds, openpi's (10, 5) (pre-registered in `experiments/bok/prereg_ext.md`) | `run_chain8_extension.sh`, `run_chain8b_b6.sh`, `run_chain8c_b2s2.sh` |
 | Failure tracking (Table I) | the tracking runs above (`--log_exec 1`), `diag_grasp.py` |
 | Pre-registered fresh-state test (initial states 50–99) | `experiments/bok/run_fresh50.sh`, analysis block in `fig_paper.py` |
-| Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py` |
+| Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py`; video: `video_frames.py`, `compose_video.py` |
 
 ## Citation
 
