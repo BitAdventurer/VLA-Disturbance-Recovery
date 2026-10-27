@@ -1,0 +1,375 @@
+[
+ {
+  "condition": "obj",
+  "task": 0,
+  "init": 28,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 2,
+  "init": 28,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 3,
+  "init": 29,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 4,
+  "init": 27,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 5,
+  "init": 37,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 7,
+  "init": 25,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 8,
+  "init": 27,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 9,
+  "init": 41,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/obj_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 0,
+  "init": 28,
+  "arm": "replan",
+  "success": 1.0,
+  "length": 293,
+  "detections": [
+   52,
+   301
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 2,
+  "init": 28,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   204
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 3,
+  "init": 29,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   76
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 4,
+  "init": 27,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   48
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 5,
+  "init": 37,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   65
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 7,
+  "init": 25,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   45
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 8,
+  "init": 27,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   95
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 9,
+  "init": 41,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   97
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 0,
+  "init": 28,
+  "arm": "student",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   52
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 2,
+  "init": 28,
+  "arm": "student",
+  "success": 1.0,
+  "length": 326,
+  "detections": [
+   204,
+   336
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 3,
+  "init": 29,
+  "arm": "student",
+  "success": 1.0,
+  "length": 273,
+  "detections": [
+   76
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 4,
+  "init": 27,
+  "arm": "student",
+  "success": 1.0,
+  "length": 282,
+  "detections": [
+   48
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 5,
+  "init": 37,
+  "arm": "student",
+  "success": 1.0,
+  "length": 152,
+  "detections": [
+   65
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 7,
+  "init": 25,
+  "arm": "student",
+  "success": 1.0,
+  "length": 316,
+  "detections": [
+   45
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 8,
+  "init": 27,
+  "arm": "student",
+  "success": 1.0,
+  "length": 393,
+  "detections": [
+   95
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "obj",
+  "task": 9,
+  "init": 41,
+  "arm": "student",
+  "success": 1.0,
+  "length": 388,
+  "detections": [
+   97,
+   125
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2.jsonl"
+ },
+ {
+  "condition": "none",
+  "task": 1,
+  "init": 28,
+  "arm": "base",
+  "success": 1.0,
+  "length": 232,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/cal_none_s0.jsonl"
+ },
+ {
+  "condition": "none",
+  "task": 1,
+  "init": 28,
+  "arm": "replan",
+  "success": 1.0,
+  "length": 233,
+  "detections": [
+   62
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/det_none_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "none",
+  "task": 1,
+  "init": 28,
+  "arm": "student",
+  "success": 1.0,
+  "length": 233,
+  "detections": [
+   62
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/student_v2_none.jsonl"
+ },
+ {
+  "condition": "big",
+  "task": 0,
+  "init": 37,
+  "arm": "base",
+  "success": 0.0,
+  "length": 520,
+  "detections": [],
+  "matches_result_file": true,
+  "result_file": "results_dist/objbig_static_n2_h10_s0.jsonl"
+ },
+ {
+  "condition": "big",
+  "task": 0,
+  "init": 37,
+  "arm": "replan",
+  "success": 0.0,
+  "length": 520,
+  "detections": [
+   50
+  ],
+  "matches_result_file": true,
+  "result_file": "results_dist/objbig_det_n2h10_s0.jsonl"
+ },
+ {
+  "condition": "big",
+  "task": 0,
+  "init": 37,
+  "arm": "student",
+  "success": 1.0,
+  "length": 398,
+  "detections": [
+   50
+  ],
+  "matches_result_file": true,
+  "result_file": "results_res/gen_big_student_v2.jsonl"
+ }
+]

@@ -85,6 +85,38 @@ step at 20 Hz). The replay is pixel-identical to the frames in Fig. 4. MP4: [rea
 
 <p align="center"><a href="assets/fig4_episode.mp4"><img src="assets/fig4_episode.gif" width="760" alt="Video of the Fig. 4 episode: the base policy closes at the old mug position and times out; the residual student detects the displacement, replans, shifts toward the mug and completes the task"></a></p>
 
+### More episodes
+
+Each video replays one evaluated episode three times, side by side: π0.5 alone, replanning at the detected event
+(detector only), and replanning plus the residual student. All use held-out start states (25–49) with the same start
+state, displacement and sampling noise in every panel. Every replay reproduces the success, length and detector
+firings recorded in the result files (`scripts/verify_replays.py`; record in
+[assets/videos/replay_check.json](assets/videos/replay_check.json)). The episodes follow fixed rules, not a visual pick:
+
+- **Tasks** (4–6 cm): for each task, the first held-out start state where π0.5 alone and the detector-only replan
+  fail and the student succeeds. Tasks 0 and 1 have no such state, and task 6 is Fig. 4.
+- **Failure** (4–6 cm): the first (task, start state) where both π0.5 alone and the student fail. Here the
+  detector-only replan succeeds, so the residual hurt.
+- **Undisturbed**: in task 1, the only task not shown otherwise, the first start state where the detector fires
+  falsely and every setting succeeds.
+- **8–12 cm**: the first (task, start state) where π0.5 alone and the replan fail and the student succeeds.
+
+These are examples, not rates; for the rates see Table II and Figs. 2–3 of the paper. Click a still to open the MP4
+(real time, 20 Hz).
+
+| Episode | What happens | π0.5 alone | Replan only | + Residual student |
+|:--|:--|:-:|:-:|:-:|
+| [<img src="assets/videos/thumbs/task2_4-6cm_s28.jpg" width="320">](assets/videos/task2_4-6cm_s28.mp4) | Task 2 (turn on the stove and put the moka pot on it), start state 28: the moka pot moves 5.9 cm at t = 130 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task3_4-6cm_s29.jpg" width="320">](assets/videos/task3_4-6cm_s29.mp4) | Task 3 (black bowl into the bottom drawer, close it), state 29: the bowl moves 5.2 cm at t = 75 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task4_4-6cm_s27.jpg" width="320">](assets/videos/task4_4-6cm_s27.mp4) | Task 4 (two mugs on two plates), state 27: the white mug moves 4.8 cm at t = 47 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task5_4-6cm_s37.jpg" width="320">](assets/videos/task5_4-6cm_s37.mp4) | Task 5 (book into the caddy's back compartment), state 37: the book moves 4.5 cm at t = 64 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task7_4-6cm_s25.jpg" width="320">](assets/videos/task7_4-6cm_s25.mp4) | Task 7 (alphabet soup and cream cheese into the basket), state 25: the soup moves 5.9 cm at t = 44 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task8_4-6cm_s27.jpg" width="320">](assets/videos/task8_4-6cm_s27.mp4) | Task 8 (both moka pots on the stove), state 27: a moka pot moves 5.6 cm at t = 94 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task9_4-6cm_s41.jpg" width="320">](assets/videos/task9_4-6cm_s41.mp4) | Task 9 (mug into the microwave, close it), state 41: the mug moves 5.7 cm at t = 96 | timeout | timeout | success |
+| [<img src="assets/videos/thumbs/task0_4-6cm_s28.jpg" width="320">](assets/videos/task0_4-6cm_s28.mp4) | **Failure.** Task 0 (alphabet soup and tomato sauce into the basket), state 28: the soup moves 4.3 cm at t = 51 | timeout | success | timeout |
+| [<img src="assets/videos/thumbs/task1_undisturbed_s28.jpg" width="320">](assets/videos/task1_undisturbed_s28.mp4) | **Undisturbed.** Task 1 (cream cheese and butter into the basket), state 28: a false alarm at t = 62 triggers a replan (and the residual) | success | success | success |
+| [<img src="assets/videos/thumbs/task0_8-12cm_s37.jpg" width="320">](assets/videos/task0_8-12cm_s37.mp4) | **8–12 cm.** Task 0, state 37: the soup moves 11.2 cm at t = 49 | timeout | timeout | success |
+
 ## Repository layout
 
 ```
@@ -244,6 +276,7 @@ unchanged. Where each result comes from:
 | Failure tracking (Table I) | the tracking runs above (`--log_exec 1`), `diag_grasp.py` |
 | Pre-registered fresh-state test (initial states 50–99) | `experiments/bok/run_fresh50.sh`, analysis block in `fig_paper.py` |
 | Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py`; video: `video_frames.py`, `compose_video.py` |
+| More episode videos (README) | `run_videos.sh` (`video_frames.py`, `verify_replays.py`, `compose_episode.py`) |
 
 ## Citation
 
