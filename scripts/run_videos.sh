@@ -13,9 +13,11 @@ cd $E
 rep() {  # condition task init disturb magnitude
   $LIBERO_PY $S/video_frames.py --task $2 --init $3 --arms base,replan,student --disturb $4 --mag $5 --port 8000 --out "$O/$1"
 }
-mk() {   # condition task init name label
+mk() {   # condition task init name label; the README shows an animated WebP (840 px, 10 fps, real time)
   $LIBERO_PY $S/compose_episode.py "$O/$4.mp4" --label "$5" --thumb "$O/$4.jpg" \
     --dirs base:$O/$1/base_t$2_e$3,replan:$O/$1/replan_t$2_e$3,student:$O/$1/student_t$2_e$3
+  ffmpeg -y -loglevel error -i "$O/$4.mp4" -vf "fps=10,scale=840:-1:flags=lanczos" -c:v libwebp_anim -lossless 0 \
+    -quality 50 -compression_level 6 -loop 0 -an "$O/$4.webp"
 }
 GALLERY="2:28 3:29 4:27 5:37 7:25 8:27 9:41 0:28"
 for ti in $GALLERY; do rep obj ${ti%:*} ${ti#*:} object 0.04,0.06; done

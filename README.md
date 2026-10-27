@@ -101,21 +101,71 @@ firings recorded in the result files (`scripts/verify_replays.py`; record in
   falsely and every setting succeeds.
 - **8–12 cm**: the first (task, start state) where π0.5 alone and the replan fail and the student succeeds.
 
-These are examples, not rates; for the rates see Table II and Figs. 2–3 of the paper. Click a still to open the MP4
-(real time, 20 Hz).
+These are examples, not rates; for the rates see Table II and Figs. 2–3 of the paper. The previews below play in
+real time (20 Hz control shown at 10 frames per second). Click one to open the full-resolution MP4.
 
 | Episode | What happens | π0.5 alone | Replan only | + Residual student |
 |:--|:--|:-:|:-:|:-:|
-| [<img src="assets/videos/thumbs/task2_4-6cm_s28.jpg" width="320">](assets/videos/task2_4-6cm_s28.mp4) | Task 2 (turn on the stove and put the moka pot on it), start state 28: the moka pot moves 5.9 cm at t = 130 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task3_4-6cm_s29.jpg" width="320">](assets/videos/task3_4-6cm_s29.mp4) | Task 3 (black bowl into the bottom drawer, close it), state 29: the bowl moves 5.2 cm at t = 75 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task4_4-6cm_s27.jpg" width="320">](assets/videos/task4_4-6cm_s27.mp4) | Task 4 (two mugs on two plates), state 27: the white mug moves 4.8 cm at t = 47 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task5_4-6cm_s37.jpg" width="320">](assets/videos/task5_4-6cm_s37.mp4) | Task 5 (book into the caddy's back compartment), state 37: the book moves 4.5 cm at t = 64 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task7_4-6cm_s25.jpg" width="320">](assets/videos/task7_4-6cm_s25.mp4) | Task 7 (alphabet soup and cream cheese into the basket), state 25: the soup moves 5.9 cm at t = 44 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task8_4-6cm_s27.jpg" width="320">](assets/videos/task8_4-6cm_s27.mp4) | Task 8 (both moka pots on the stove), state 27: a moka pot moves 5.6 cm at t = 94 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task9_4-6cm_s41.jpg" width="320">](assets/videos/task9_4-6cm_s41.mp4) | Task 9 (mug into the microwave, close it), state 41: the mug moves 5.7 cm at t = 96 | timeout | timeout | success |
-| [<img src="assets/videos/thumbs/task0_4-6cm_s28.jpg" width="320">](assets/videos/task0_4-6cm_s28.mp4) | **Failure.** Task 0 (alphabet soup and tomato sauce into the basket), state 28: the soup moves 4.3 cm at t = 51 | timeout | success | timeout |
-| [<img src="assets/videos/thumbs/task1_undisturbed_s28.jpg" width="320">](assets/videos/task1_undisturbed_s28.mp4) | **Undisturbed.** Task 1 (cream cheese and butter into the basket), state 28: a false alarm at t = 62 triggers a replan (and the residual) | success | success | success |
-| [<img src="assets/videos/thumbs/task0_8-12cm_s37.jpg" width="320">](assets/videos/task0_8-12cm_s37.mp4) | **8–12 cm.** Task 0, state 37: the soup moves 11.2 cm at t = 49 | timeout | timeout | success |
+| [Task 2, state 28](#task2-4-6cm-s28) | The moka pot moves 5.9 cm at t = 130 | timeout | timeout | success |
+| [Task 3, state 29](#task3-4-6cm-s29) | The bowl moves 5.2 cm at t = 75 | timeout | timeout | success |
+| [Task 4, state 27](#task4-4-6cm-s27) | The white mug moves 4.8 cm at t = 47 | timeout | timeout | success |
+| [Task 5, state 37](#task5-4-6cm-s37) | The book moves 4.5 cm at t = 64 | timeout | timeout | success |
+| [Task 7, state 25](#task7-4-6cm-s25) | The soup moves 5.9 cm at t = 44 | timeout | timeout | success |
+| [Task 8, state 27](#task8-4-6cm-s27) | A moka pot moves 5.6 cm at t = 94 | timeout | timeout | success |
+| [Task 9, state 41](#task9-4-6cm-s41) | The mug moves 5.7 cm at t = 96 | timeout | timeout | success |
+| **Failure.** [Task 0, state 28](#task0-4-6cm-s28) | The soup moves 4.3 cm at t = 51; the residual hurts here | timeout | success | timeout |
+| **Undisturbed.** [Task 1, state 28](#task1-undisturbed-s28) | Nothing is moved; a false alarm at t = 62 triggers a replan (and the residual) | success | success | success |
+| **8–12 cm.** [Task 0, state 37](#task0-8-12cm-s37) | The soup moves 11.2 cm at t = 49 | timeout | timeout | success |
+
+<a id="task2-4-6cm-s28"></a>
+**Task 2 (turn on the stove and put the moka pot on it), start state 28.** The moka pot moves 5.9 cm at t = 130. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task2_4-6cm_s28.mp4"><img src="assets/videos/anim/task2_4-6cm_s28.webp" width="840" alt="Task 2 (turn on the stove and put the moka pot on it), start state 28: the moka pot moves 5.9 cm at t = 130"></a></p>
+
+<a id="task3-4-6cm-s29"></a>
+**Task 3 (put the black bowl in the bottom drawer of the cabinet and close it), state 29.** The bowl moves 5.2 cm at t = 75. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task3_4-6cm_s29.mp4"><img src="assets/videos/anim/task3_4-6cm_s29.webp" width="840" alt="Task 3 (put the black bowl in the bottom drawer of the cabinet and close it), state 29: the bowl moves 5.2 cm at t = 75"></a></p>
+
+<a id="task4-4-6cm-s27"></a>
+**Task 4 (put the white mug on the left plate and the yellow and white mug on the right plate), state 27.** The white mug moves 4.8 cm at t = 47. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task4_4-6cm_s27.mp4"><img src="assets/videos/anim/task4_4-6cm_s27.webp" width="840" alt="Task 4 (put the white mug on the left plate and the yellow and white mug on the right plate), state 27: the white mug moves 4.8 cm at t = 47"></a></p>
+
+<a id="task5-4-6cm-s37"></a>
+**Task 5 (pick up the book and place it in the back compartment of the caddy), state 37.** The book moves 4.5 cm at t = 64. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task5_4-6cm_s37.mp4"><img src="assets/videos/anim/task5_4-6cm_s37.webp" width="840" alt="Task 5 (pick up the book and place it in the back compartment of the caddy), state 37: the book moves 4.5 cm at t = 64"></a></p>
+
+<a id="task7-4-6cm-s25"></a>
+**Task 7 (put both the alphabet soup and the cream cheese box in the basket), state 25.** The soup moves 5.9 cm at t = 44. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task7_4-6cm_s25.mp4"><img src="assets/videos/anim/task7_4-6cm_s25.webp" width="840" alt="Task 7 (put both the alphabet soup and the cream cheese box in the basket), state 25: the soup moves 5.9 cm at t = 44"></a></p>
+
+<a id="task8-4-6cm-s27"></a>
+**Task 8 (put both moka pots on the stove), state 27.** A moka pot moves 5.6 cm at t = 94. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task8_4-6cm_s27.mp4"><img src="assets/videos/anim/task8_4-6cm_s27.webp" width="840" alt="Task 8 (put both moka pots on the stove), state 27: a moka pot moves 5.6 cm at t = 94"></a></p>
+
+<a id="task9-4-6cm-s41"></a>
+**Task 9 (put the yellow and white mug in the microwave and close it), state 41.** The mug moves 5.7 cm at t = 96. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task9_4-6cm_s41.mp4"><img src="assets/videos/anim/task9_4-6cm_s41.webp" width="840" alt="Task 9 (put the yellow and white mug in the microwave and close it), state 41: the mug moves 5.7 cm at t = 96"></a></p>
+
+<a id="task0-4-6cm-s28"></a>
+**Failure: Task 0 (put both the alphabet soup and the tomato sauce in the basket), state 28.** The soup moves 4.3 cm at t = 51; the residual hurts here. π0.5 alone: timeout; replan only: success; + residual student: timeout.
+
+<p align="center"><a href="assets/videos/task0_4-6cm_s28.mp4"><img src="assets/videos/anim/task0_4-6cm_s28.webp" width="840" alt="Failure: Task 0 (put both the alphabet soup and the tomato sauce in the basket), state 28: the soup moves 4.3 cm at t = 51; the residual hurts here"></a></p>
+
+<a id="task1-undisturbed-s28"></a>
+**Undisturbed: Task 1 (put both the cream cheese box and the butter in the basket), state 28.** Nothing is moved; a false alarm at t = 62 triggers a replan (and the residual). π0.5 alone: success; replan only: success; + residual student: success.
+
+<p align="center"><a href="assets/videos/task1_undisturbed_s28.mp4"><img src="assets/videos/anim/task1_undisturbed_s28.webp" width="840" alt="Undisturbed: Task 1 (put both the cream cheese box and the butter in the basket), state 28: nothing is moved; a false alarm at t = 62 triggers a replan (and the residual)"></a></p>
+
+<a id="task0-8-12cm-s37"></a>
+**8–12 cm: Task 0, state 37.** The soup moves 11.2 cm at t = 49. π0.5 alone: timeout; replan only: timeout; + residual student: success.
+
+<p align="center"><a href="assets/videos/task0_8-12cm_s37.mp4"><img src="assets/videos/anim/task0_8-12cm_s37.webp" width="840" alt="8–12 cm: Task 0, state 37: the soup moves 11.2 cm at t = 49"></a></p>
 
 ## Repository layout
 
