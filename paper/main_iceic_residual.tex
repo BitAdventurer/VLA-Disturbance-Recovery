@@ -88,9 +88,9 @@ They are evaluated on different tasks and disturbances; a concurrent benchmark o
 
 Our contributions are:
 \begin{itemize}
-  \item a paired, seeded protocol on LIBERO-10 in which $\pi_{0.5}$ often first closes the gripper nearer the old
-        position of a target object displaced mid-execution: every method is compared with the mean of seven noise
-        draws of the base policy
+  \item an evaluation protocol for mid-execution target displacement on LIBERO-10, in which $\pi_{0.5}$ often first closes the
+        gripper nearer the old position: every method faces the same seeded displacement and is compared with a seven-draw mean
+        of the base policy
         (complementing studies that perturb the setup~\cite{fei2025liberoplus}
         or the robot's actions~\cite{guo2026robustvla,gao2026ogpo});
   \item evidence that when to replan matters less than how much to correct: inference levers recover little,
