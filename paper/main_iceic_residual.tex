@@ -92,13 +92,13 @@ Our contributions are:
         and is compared with the mean of seven sampling-noise draws of the base policy
         (complementing studies that perturb the setup before execution~\cite{fei2025liberoplus}
         or the robot's actions during it~\cite{guo2026robustvla,gao2026ogpo}), with a diagnosis of the failure;
-  \item under it, a comparison showing that simple inference levers do not
-        recover the loss and that moving the query to the event recovers only a few of the 31 points while more computation at the next scheduled query recovers nothing measurable, with a learned per-step detector
-        that recognizes 87--90\% of displacements on held-out initial states within three control steps;
-  \item an event-gated residual recovery policy, trained as a privileged teacher by behavior cloning (BC) of a scripted
-        shift followed by proximal policy optimization (PPO) and distilled into
-        a vision-only student, that adds 2.9 points over a fixed-rule shift in a pre-registered test on fresh initial states (3.9 on held-out ones),
-        still gains with displacements twice as large and causes no measurable change in
+  \item under it, a comparison showing that simple inference levers recover little, more computation at the next
+        scheduled query recovers nothing measurable and moving the query to the event recovers at most a few points;
+  \item an event-gated residual recovery policy as lightweight post-training around the VLA: a privileged teacher
+        trained by behavior cloning (BC) of a scripted shift followed by proximal policy optimization (PPO) is distilled into
+        a vision-only student gated by a learned per-step detector that recognizes 87--90\% of displacements on held-out
+        initial states within three control steps; the student adds 2.9 points over a fixed-rule shift in a pre-registered
+        test on fresh initial states, still gains with displacements twice as large and causes no measurable change in
         undisturbed success.\footnote{Code, trained modules and per-episode results:\newline \url{https://github.com/BitAdventurer/VLA-Disturbance-Recovery}}
 \end{itemize}
 
