@@ -63,8 +63,8 @@ learning, action chunking, event-triggered replanning, disturbance detection
 Vision-language-action (VLA) models have become a standard recipe for
 language-conditioned manipulation~\cite{kim2024openvla,black2024pi0,pi05}.
 Most now predict \emph{action chunks}~\cite{zhao2023act,chi2025diffusion}:
-one query of the model yields a short sequence of $H$ actions, of which the robot
-executes a prefix of $h$ steps before the model is queried again. Chunking smooths motion and amortizes the backbone's cost but makes the
+one query of the model yields $H$ actions, of which the robot
+executes only the first $h\le H$ and discards the rest before the model is queried again. Chunking smooths motion and amortizes the backbone's cost but makes the
 controller open loop between queries. If the scene changes
 inside a chunk, the robot executes actions planned for the old scene
 until the chunk is spent, and the next query sees a configuration the training data
