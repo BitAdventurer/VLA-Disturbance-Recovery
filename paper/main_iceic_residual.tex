@@ -92,9 +92,10 @@ Our contributions are:
         and is compared with the mean of seven sampling-noise draws of the base policy
         (complementing studies that perturb the setup before execution~\cite{fei2025liberoplus}
         or the robot's actions during it~\cite{guo2026robustvla,gao2026ogpo}), with a diagnosis of the failure;
-  \item under it, a comparison showing that simple inference levers recover little, more computation at the next
-        scheduled query recovers nothing measurable and moving the query to the event recovers at most a few points;
-  \item an event-gated residual recovery policy as lightweight post-training around the VLA: a privileged teacher
+  \item evidence that when to replan matters less than how much to correct: inference levers recover little,
+        more computation at the next scheduled query nothing measurable and replanning at the detected event
+        at most a few points, whereas a fixed-rule shift gains about six;
+  \item an event-gated residual recovery policy as post-training around the VLA: a privileged teacher
         trained by behavior cloning (BC) of a scripted shift followed by proximal policy optimization (PPO) is distilled into
         a vision-only student gated by a learned per-step detector that recognizes 87--90\% of displacements on held-out
         initial states within three control steps; the student adds 2.9 points over a fixed-rule shift in a pre-registered
