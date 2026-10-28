@@ -2,7 +2,10 @@
 """fig_qual.py OUT.pdf [DPI]: qualitative frame strip of one disturbed episode (task 6, init 37, mug displaced 5.1 cm)
 for the base policy and the residual student, from results_res/qual/{base,student}_t6_e37/frame_%04d.png.
 The paper figure is made with DPI=300 (frames 166 px wide); the poster copy uses DPI=600 so that the frames are not
-downsampled when printed on A0. Without DPI, matplotlib's default 100 dpi gives 56-px frames."""
+downsampled when printed on A0. Without DPI, matplotlib's default 100 dpi gives 56-px frames.
+qual_frames.py saves the query-step frames only. The student's last panel is t=267, the step at which its episode
+ends; frame_0267.png was made from the step-by-step replay (video_frames.py) with the same bilinear 256-to-224
+resize, which reproduces all 26 saved query frames of that run exactly."""
 import os
 import sys
 
@@ -23,8 +26,8 @@ ORANGE, GREEN, VERM, GREY = "#E69F00", "#009E73", "#D55E00", "#7F7F7F"
 rows = [
     ("π$_\\mathbf{0.5}$ alone\n(timeout)", "base_t6_e37", [40, 50, 70, 130, 430],
      ["approach\n$t\\,{=}\\,40$", "displaced, no\nreaction $t\\,{=}\\,50$", "closes at old\nposition $t\\,{=}\\,70$", "pushes the\nmug $t\\,{=}\\,130$", "knocked\nover $t\\,{=}\\,430$"]),
-    ("+ residual\nstudent\n(success)", "student_t6_e37", [40, 48, 68, 97, 257],
-     ["approach\n$t\\,{=}\\,40$", "detected, replan\n+ $\\Delta$, $t\\,{=}\\,48$", "shifted toward\nmug $t\\,{=}\\,68$", "grasp\n$t\\,{=}\\,97$", "task done\n$t\\,{=}\\,257$"]),
+    ("+ residual\nstudent\n(success)", "student_t6_e37", [40, 48, 68, 97, 267],
+     ["approach\n$t\\,{=}\\,40$", "detected, replan\n+ $\\Delta$, $t\\,{=}\\,48$", "shifted toward\nmug $t\\,{=}\\,68$", "grasp\n$t\\,{=}\\,97$", "task done\n$t\\,{=}\\,267$"]),
 ]
 crop = (36, 28, 204, 200)      # x0, y0, x1, y1 of the 224x224 agent view (table region incl. the plate)
 ncol = len(rows[0][2])

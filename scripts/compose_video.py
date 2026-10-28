@@ -28,7 +28,7 @@ CAP = {
     "base": [(40, 47, "approach", INK), (47, 70, moved + ", no reaction", ORANGE), (70, 130, "closes at the old position", INK),
              (130, 200, "pushes the mug", INK), (430, 480, "knocks it over", INK), (520, 10**6, "timeout (t = 530)", GREY)],
     "student": [(40, 47, "approach", INK), (47, 68, moved + ": detected, replan + Δ", ORANGE),
-                (68, 97, "shifted toward the mug", INK), (97, 130, "grasp", INK), (257, 10**6, "task done", GREEN)],
+                (68, 97, "shifted toward the mug", INK), (97, 130, "grasp", INK), (267, 10**6, "task done (t = 267)", GREEN)],
 }
 HEAD = {"base": ("alone", GREY), "student": ("+ detector and residual student", GREEN)}
 f_sub = ImageFont.truetype(BOLD, 16)
@@ -73,7 +73,7 @@ for k, t in enumerate(range(T0, T1 + 1)):
         im.paste(fr, (x, TOP))
         head(dr, x, TOP - 34, arm)
         done = t >= n
-        if arm == "student" and t >= 257:
+        if arm == "student" and t >= 267:
             dr.rectangle([x - 3, TOP - 3, x + S + 2, TOP + S + 2], outline=GREEN, width=5)
         txt, c = caption(arm, t)
         if txt:
