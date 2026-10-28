@@ -185,7 +185,7 @@ conds = [
           nodhat=[RR("gen_big_student_nodhat"), RR("gen_big_student_nodhat_ns1")])),
     ("late", "4\u20136 cm,\nlate", G("objlate_static_n2_h10*"), dict(student=[RR("gen_late_student_v2"), RR("gen_late_student_v2_ns1")], teacher=[RR("gen_late_teacher_v4"), RR("gen_late_teacher_v4_ns1")])),
     ("drift", "sliding\n6\u201310 cm", G("drift_static_n2_h10*"), dict(student=[RR("gen_drift_student_v2")], teacher=[RR("gen_drift_teacher_v4")])),
-    ("push", "arm push", G("push_static_n2_h10*"), dict(student=[RR("gen_push_student_v2")])),
+    ("push", "arm push", G("push_static_n2_h10*"), dict(student=[RR("gen_push_student_v2")], teacher=[RR("gen_push_teacher_v4")])),
     ("none", "none", [RD("cal_none_s0")], dict(student=[RR("student_v2_none")], teacher=[(RR("eval_res_v4_it039_none"), RR("eval_res_v4_it039_tr_none"))],
                                                  vision=[RR("vision_s05_k2_none")], nodhat=[RR("abl_student_nodhat_none")],
                                                  det=[RD("det_none_n2h10_s0")])),
