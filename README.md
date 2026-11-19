@@ -187,7 +187,9 @@ env.sh                  paths, caches and Python environments (sourced by every 
 ```
 
 The result files are the paper's raw results with the per-step logs (`calls`, `step_change`, `detector_scores`)
-removed to keep the repository small; nothing used by the analysis was removed.
+removed to keep the repository small; nothing used by the analysis was removed. Image frames (the raw frames behind
+Fig. 4 and the README videos, and the detector and regressor training frames), best-of-8 candidate dumps and logs are
+not included; the commands under [Run the experiments](#run-the-experiments) regenerate them.
 
 ## Reproduce the paper's numbers (no GPU or simulator needed)
 
@@ -208,10 +210,20 @@ python scripts/diag_grasp.py                 # Table I: success and failure colu
 `scripts/compare_res.py` and `scripts/analyze_res.py` give paired comparisons between any two arms, for example
 `python scripts/compare_res.py student_v2,student_v2_ns1 --ref obj_static_n2_h10_s0,obj_static_n2_h10_ns1_s0`.
 
+These steps reproduce every number and both tables exactly (the numbers files byte for byte) and Figs. 2 and 3 pixel
+for pixel, and `paper/` builds the submitted PDF (checked on a fresh clone in November 2026).
+
 ## Run the experiments
 
 Tested on Linux with one NVIDIA RTX 5090 and [uv](https://docs.astral.sh/uv/). π0.5 runs through openpi's
 PyTorch path; LIBERO runs in a separate Python 3.8 client environment.
+
+Reruns reproduce the success rates within the noise the paper reports, not every episode: openpi compiles π0.5 with
+`torch.compile(mode="max-autotune")`, which chooses GPU kernels by timing, and small numeric differences grow over an
+episode. A run is repeatable once compiled (the same command run twice gave 10 of 10 identical episodes), but a fresh
+compile can differ. Rerunning the released student on all 500 episodes from a fresh clone, on the machine that
+produced the paper, gave 77.8% success (released draw 76.4%; five draws 74.4–77.6%, mean 75.9%), with 449 of 500
+episode outcomes unchanged.
 
 **Setup.** `VLA_ENV` holds openpi, the Python environments, the checkpoint and all caches.
 
