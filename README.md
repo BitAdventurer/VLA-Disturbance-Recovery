@@ -167,6 +167,41 @@ real time (20 Hz control shown at 10 frames per second). Click one to open the f
 
 <p align="center"><a href="assets/videos/task0_8-12cm_s37.mp4"><img src="assets/videos/anim/task0_8-12cm_s37.webp" width="840" alt="8–12 cm: Task 0, state 37: the soup moves 11.2 cm at t = 49"></a></p>
 
+### Trajectory view
+
+The start state of Fig. 4 (task 6, held-out start state 37) rolled out again under the same three settings, with what
+each one does drawn into its panel. Unlike the videos above, these are new rollouts, not replays of an evaluated
+episode, so details differ from Fig. 4 (see the note on reruns under [Run the experiments](#run-the-experiments)). The
+mug again moves 5.1 cm at t = 47 and the detector fires at t = 48. After that the rollouts differ: here the
+regressor's estimate is 4.3 cm and 19° off the true direction (in Fig. 4 it is 1 cm and points the wrong way), the
+detector does not fire a second time (it does at t = 87 in Fig. 4), and the student finishes at t = 279 instead of 267.
+
+**With the wrist camera** ([MP4](assets/videos/trajectory_t6_s37_wrist.mp4)). Each panel shows the end effector's
+path, a black diamond wherever the gripper closes (with a running count), a ring at every policy query (orange at the
+query a detection triggers) and, after the move, an × and a faint copy of the mug at its old position; the wrist
+camera is at the top right. Steps 40–70, around the move and its detection, play at a quarter of real time, the rest
+at twice real time. π0.5 alone closes the gripper 9 times and times out; with the replan it closes 7 times and times
+out; the student closes it 3 times (the first misses the mug, the third takes the pudding) and completes the task.
+
+<p align="center"><a href="assets/videos/trajectory_t6_s37_wrist.mp4"><img src="assets/videos/anim/trajectory_t6_s37_wrist.webp" width="840" alt="Fig. 4's start state, new rollout: end-effector paths, gripper closures and policy queries with the wrist camera; π0.5 alone and the replan time out, the residual student completes the task at t = 279"></a></p>
+
+**With signal plots** ([MP4](assets/videos/trajectory_t6_s37_signals.mp4), twice real time). Four rows under the
+panels share one cursor: each setting's policy queries; the learned detector's per-step score against its threshold
+(it jumps to 23.5 at t = 48; threshold 1.63); the size of the student's residual at each query (nonzero for the six
+queries from t = 48 to 98); and the horizontal distance from the gripper to the mug (solid) and to its old position
+(dashed) until the mug is first lifted. A top-view inset on each panel shows the move and, on the student's panel,
+the estimate while the residual is active.
+
+<p align="center"><a href="assets/videos/trajectory_t6_s37_signals.mp4"><img src="assets/videos/anim/trajectory_t6_s37_signals.webp" width="840" alt="The same rollouts with plots under the panels: policy queries, the detector score against its threshold, the student's residual per query, and the gripper's distance to the mug and to its old position"></a></p>
+
+**Undisturbed** ([MP4](assets/videos/trajectory_t6_s37_undisturbed.mp4), real time, plots as above). The same start
+state with nothing moved: the detector stays below its threshold (highest score −12.6), so neither the replan nor the
+residual starts, the three settings take the same path, and all three finish at t = 219.
+
+`scripts/run_traj_videos.sh` makes all three (`video_frames.py --log_state`, `compose_traj_panels.py`,
+`compose_traj.py`). The released compose scripts are the ones that made these files: rerun on the logged rollouts,
+they give the same MP4 files byte for byte.
+
 ## Repository layout
 
 ```
@@ -339,6 +374,7 @@ unchanged. Where each result comes from:
 | Pre-registered fresh-state test (initial states 50–99) | `experiments/bok/run_fresh50.sh`, analysis block in `fig_paper.py` |
 | Qualitative episode (Fig. 4) | `qual_frames.py`, `fig_qual.py`; video: `video_frames.py`, `compose_video.py` |
 | More episode videos (README) | `run_videos.sh` (`video_frames.py`, `verify_replays.py`, `compose_episode.py`) |
+| Trajectory videos (README) | `run_traj_videos.sh` (`video_frames.py --log_state`, `compose_traj_panels.py`, `compose_traj.py`) |
 
 ## Citation
 
