@@ -14,6 +14,7 @@ the top margin of page 1; the text is otherwise identical to `main_iceic_residua
 |---|---|
 | `main_iceic_residual.tex` | the paper |
 | `fig_overview_res.tex` | Fig. 1 (TikZ) |
+| `figures/res_overview.pdf` | Fig. 1 on its own page, for slides and posters (`scripts/fig1_standalone.py`, then `pdflatex fig1_standalone.tex`); not used by the paper build |
 | `figures/res_forest.pdf`, `figures/res_general.pdf` | Figs. 2 and 3, written by `scripts/fig_paper.py` |
 | `figures/res_qual.pdf` | Fig. 4, written by `scripts/qual_frames.py` and `scripts/fig_qual.py` |
 | `refs_res.bib` | references |

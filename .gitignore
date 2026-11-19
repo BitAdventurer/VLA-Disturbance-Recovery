@@ -19,3 +19,5 @@ paper/*.fdb_latexmk
 paper/*.out
 paper/main_iceic_residual.pdf
 paper/main_preprint.pdf
+paper/fig1_standalone.tex
+paper/fig1_standalone.pdf
