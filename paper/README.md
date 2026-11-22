@@ -1,14 +1,17 @@
 # Paper
 
-> This work has been submitted to the IEEE for possible publication. Copyright may be transferred without
-> notice, after which this version may no longer be accessible.
+> © 2027 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other
+> uses, in any current or future media, including reprinting/republishing this material for advertising or
+> promotional purposes, creating new collective works, for resale or redistribution to servers or lists, or reuse
+> of any copyrighted component of this work in other works.
 
-Preprint of **When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance Recovery
-in Vision-Language-Action Policies** (Chang-Hoon Ji and Tae-Eui Kam, Korea University), an ICEIC 2027 submission
-(IEEE Publication Track).
+Accepted version of **When to Replan and How Much to Correct: Residual Reinforcement Learning for Disturbance
+Recovery in Vision-Language-Action Policies** (Chang-Hoon Ji and Tae-Eui Kam, Korea University), accepted at
+ICEIC 2027 (IEEE Publication Track).
 
-**[ji2027replan.pdf](ji2027replan.pdf)** is the manuscript as of 2026-11-22 (6 pages) with the notice above added in
-the top margin of page 1; the text is otherwise identical to `main_iceic_residual.tex`.
+**[ji2027replan.pdf](ji2027replan.pdf)** is the accepted version (6 pages; text as of 2026-11-22) with an acceptance line
+and the notice above added in the top margin of page 1; the text is otherwise identical to `main_iceic_residual.tex`.
+The DOI will be added here once the paper is in IEEE Xplore.
 
 | File | Content |
 |---|---|
@@ -26,7 +29,7 @@ the top margin of page 1; the text is otherwise identical to `main_iceic_residua
 ```bash
 cd paper
 latexmk -pdf main_iceic_residual.tex   # the paper without the notice
-latexmk -pdf main_preprint.tex         # preprint with the notice
+latexmk -pdf main_preprint.tex         # accepted version with the notice
 ```
 
 Tested with TeX Live 2026 (pdfLaTeX, BibTeX). `main_preprint.tex` needs LaTeX 2020-10 or later.
@@ -38,8 +41,7 @@ comes from.
 
 ## Copyright
 
-The paper's text and figures are © 2026 the authors and are **not** covered by the MIT License of the code in
-this repository. If the paper is accepted, the copyright may be transferred to the IEEE; this preprint will then
-be replaced by the accepted version with the IEEE copyright notice and, once assigned, its DOI. `IEEEtran.cls` is
-© Michael Shell and contributors and is distributed under the LaTeX Project Public License; the complete package
-is on [CTAN](https://ctan.org/pkg/ieeetran).
+The paper's text and figures are © 2027 IEEE (see the notice above) and are **not** covered by the MIT License of
+the code in this repository. This folder holds the accepted version, not the version published by the IEEE; the
+DOI will be added once the paper is in IEEE Xplore. `IEEEtran.cls` is © Michael Shell and contributors and is
+distributed under the LaTeX Project Public License; the complete package is on [CTAN](https://ctan.org/pkg/ieeetran).
