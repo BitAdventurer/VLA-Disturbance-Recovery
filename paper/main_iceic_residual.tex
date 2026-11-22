@@ -85,7 +85,7 @@ when to replan, how much to compute per query, or which of several sampled
 chunks to keep~\cite{liang2026aac,pan2026corrector,chun2025dasip,liu2025bid}; runtime
 monitors detect execution failures~\cite{agia2024sentinel,xu2025faildetect,gu2025safe};
 and residual reinforcement learning (RL) learns corrections on top of a fixed policy~\cite{yuan2025decorator,xiao2025pld}.
-They are evaluated on different tasks and disturbances; a concurrent benchmark of mid-execution changes such as target relocation finds, for four of its 14 policies including $\pi_{0.5}$, that varying the query cadence does not close the gap, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test simple versions of each response under one protocol. Moving the query to the event helps little, and the new chunk seems to aim only partly at the new position; correcting the actions recovers more: about six of the 31 lost points with a fixed rule and eight to eleven with a detector-gated residual policy cloned and refined with RL as post-training around the VLA (Fig.~\ref{fig:overview}).
+They are evaluated on different tasks and disturbances; a concurrent benchmark of mid-execution changes such as target relocation finds, for four of its 14 policies including $\pi_{0.5}$, that varying the query cadence does not close the gap, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test simple versions of each response under one protocol. Moving the query to the event helps little, and the new chunk seems to aim only partly at the new position; correcting the actions recovers more: about six of the 31 lost points with a fixed rule and eight to eleven with a detector-gated residual policy cloned and refined with RL as post-training around the VLA (Fig.~\ref{fig:overview}; Table~\ref{tab:rec}).
 
 Our contributions are:
 \begin{itemize}
@@ -264,8 +264,8 @@ Fig.~\ref{fig:forest} (top, held out) shows fixed settings of the levers that ad
 
 \subsection{When to Replan: At the Event}\label{sec:event}
 The base policy already replans at the next scheduled query. On held-out episodes, spending $n=10$ steps on that query and up to two more (oracle event timing) gains nothing measurable ($+0.6$ [$-2.6$, $+4.1$]), whereas, with the same oracle, moving the query \emph{to} the displacement gains $+3.7$ at $(2,10)$ and $+4.5$ with $n=10$ on the three queries from it, the latter $+3.9$ [$+0.4$, $+7.3$] above the next-query variant. The learned detector realizes most of this without the
-oracle ($+2.8$ and $+4.2$; all 500: Table~\ref{tab:rec}) at $1.00\times$ and $1.02\times$ the policy-query time. In closed loop it detects 87--90\% of the displacements on held-out initial states within three control steps (98--100\% on training states), with 0.10--0.15 false alarms per disturbed episode, and leaves undisturbed success at
-95.2\% on all 500 (base 95.4\%). On the fresh initial states its replan gains only $+0.2$ [$-2.4$, $+2.8$] (two draws; inconclusive), so the small gain above is not confirmed.
+oracle ($+2.8$ and $+4.2$; all 500: Table~\ref{tab:rec}) at $1.00\times$ and $1.02\times$ the policy-query time. In closed loop it detects 87--90\% of the displacements on held-out initial states within three control steps (98--100\% on training states), with 0.10--0.15 false alarms per disturbed episode, and changes undisturbed success
+by $-0.2$ (Table~\ref{tab:rec}). On fresh initial states its replan gains only $+0.2$ [$-2.4$, $+2.8$], so the small gain above is not confirmed.
 
 \subsection{How Much to Correct: Residual Recovery}\label{sec:correct}
  On held-out episodes the privileged scripted shift and the fixed-rule shift by $0.5\,\hat d$, which adds a replan at each detection, gain about the same ($+6.1$ and $+5.7$, three draws each; Fig.~\ref{fig:forest}). With privileged $d$, the detector's replan plus the scripted shift reaches 71.3\% held out (three draws), $+6.4$ [$+2.9$, $+10.1$] above the replan alone: shifting the actions adds to replanning. Learning the correction
@@ -274,38 +274,38 @@ episodes ($+12.9$ [$+9.5$, $+16.6$], five draws), $+4.3$ [$+0.5$, $+8.4$]
 above its behavior-cloned start (70.8\%, one draw); PPO from scratch reaches 72.2\% (two draws), 2.9 points [$-0.4$, $+6.3$] below the teacher. We did not distill a student from the behavior-cloned start, so PPO's share of the student's gain is not measured.
 
 The distilled student comes within a few points of its teacher
-without any privileged input: 71.8\% held out ($+9.6$ [$+5.8$, $+13.4$], five draws;
-$-4.4$ [$-7.3$, $-1.6$] against the teacher with the same replan) and
-75.9\% on all 500 episodes (Table~\ref{tab:rec}). Held out, it is $+3.9$ [$+0.9$, $+6.9$] above the fixed-rule shift and $+3.9$ [$+1.2$, $+6.8$] above the best of seven rules on training states ($\alpha=0.5$, $k=4$; all 500: $+4.7$, $+4.8$). On undisturbed episodes the
-student (active in 5\% through false alarms) scores 95.4\%, as does the base draw with the same noise (one episode flips each way); against three base draws it is $+0.3$ [$-1.0$, $+1.7$], so the 95\% interval excludes drops above about one point. In the pre-registered test on fresh initial states the student gains $+8.4$ [$+5.6$, $+11.2$] (73.7\% versus 65.4\%) and $+2.9$ [$+0.7$, $+5.1$] over the fixed-rule shift, which itself gains $+5.4$; undisturbed success changes by $-0.2$ [$-1.0$, $+0.4$] (one draw). Against the 32.6\,ms GPU policy query, the detector takes 0.4\,ms per control step, the regressor 2.2\,ms per detection and the student MLP 0.02\,ms per active query (two CPU threads; full loop not timed).
+without any privileged input: held out, it gains $+9.6$ [$+5.8$, $+13.4$] and is
+$-4.4$ [$-7.3$, $-1.6$] against the teacher with the same replan. Held out, it is $+3.9$ [$+0.9$, $+6.9$] above the fixed-rule shift and $+3.9$ [$+1.2$, $+6.8$] above the best of seven rules on training states ($\alpha=0.5$, $k=4$; all 500: $+4.7$, $+4.8$). On undisturbed episodes the
+student (active in 5\% through false alarms) scores 95.4\%, as does the base draw with the same noise (one episode flips each way); against three base draws it is $+0.3$ [$-1.0$, $+1.7$], so the 95\% interval excludes drops above about one point. In the pre-registered test on fresh initial states the student gains $+8.4$ [$+5.6$, $+11.2$] and $+2.9$ [$+0.7$, $+5.1$] over the fixed-rule shift; undisturbed success changes by $-0.2$ [$-1.0$, $+0.4$] (one draw). Against the 32.6\,ms GPU policy query, the detector takes 0.4\,ms per control step, the regressor 2.2\,ms per detection and the student MLP 0.02\,ms per active query (two CPU threads; full loop not timed).
 
 \begin{table}[t]
-\caption{Recovery on 500 Disturbed and on Undisturbed Episodes (Bold: Vision-Only Student)}
+\caption{Summary of Results per Set of Initial States: Success of $\pi_{0.5}$ Alone (\%) and Paired Gains (Points)}
 \label{tab:rec}
 \centering
 \scriptsize
-\setlength{\tabcolsep}{2.1pt}
-\begin{tabular}{llcccc}
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular}{llccccc}
 \toprule
-Method & In. & Draws & Succ. & Gain [95\% interval] & Undist. \\
+ & & Fresh$^{\mathrm{a}}$ & Held out & All & 8--12\,cm & Undist. \\
+Method & In. & 50--99 & 25--49 & 0--49 & 0--49 & 0--49 \\
 \midrule
-$\pi_{0.5}$ alone, $(2,10)$ & -- & 7 & 64.7 & -- & 95.4 \\
-Detector $\rightarrow$ replan, $(2,10)$ & V & 5 & 67.2 & $+2.5$ [$+0.6$, $+4.5$] & 95.2 \\
-Detector $\rightarrow$ replan, then $n{=}10$ & V & 3 & 67.9 & $+3.3$ [$+1.0$, $+5.5$] & -- \\
-Scripted shift $0.5\,d$ & P & 3 & 70.9 & $+6.3$ [$+3.9$, $+8.7$] & 90.8 \\
-Fixed-rule shift $0.5\,\hat d$ & V & 3 & 71.2 & $+6.5$ [$+3.7$, $+9.3$] & 95.4 \\
-Residual teacher (BC + PPO) & P & 5 & 77.4 & $+12.7$ [$+10.1$, $+15.3$] & 95.2 \\
-Student without $\hat d$ & V & 2 & 74.5 & $+9.8$ [$+6.9$, $+12.7$] & 95.4 \\
-\textbf{Residual student} & V & 5 & \textbf{75.9} & $\mathbf{+11.2}$ [$+8.5$, $+13.9$] & 95.4 \\
+$\pi_{0.5}$ alone, $(2,10)$ & -- & 65.4 & 62.2 & 64.7 & 37.0 & 95.4 \\
+Detector $\rightarrow$ replan & V & $+0.2$ & $\mathbf{+2.8}$ & $\mathbf{+2.5}$ & -- & $-0.2$ \\
+Detector $\rightarrow$ replan, then $n{=}10$ & V & -- & $\mathbf{+4.2}$ & $\mathbf{+3.3}$ & -- & -- \\
+Scripted shift $0.5\,d$ & P & -- & $\mathbf{+6.1}$ & $\mathbf{+6.3}$ & -- & $\mathbf{-4.6}$ \\
+Fixed-rule shift $0.5\,\hat d$ & V & $\mathbf{+5.4}$ & $\mathbf{+5.7}$ & $\mathbf{+6.5}$ & $\mathbf{+3.8}$ & $0.0$ \\
+Residual teacher (BC + PPO) & P & -- & $\mathbf{+12.9}$ & $\mathbf{+12.7}$ & $\mathbf{+12.1}$ & $-0.2$ \\
+Student without $\hat d$ & V & -- & $\mathbf{+8.4}$ & $\mathbf{+9.8}$ & $\mathbf{+4.4}$ & $0.0$ \\
+\textbf{Residual student} & V & $\mathbf{+8.4}$ & $\mathbf{+9.6}$ & $\mathbf{+11.2}$ & $\mathbf{+8.3}$ & $0.0$ \\
 \bottomrule
-\multicolumn{6}{l}{\scriptsize In.: V vision + proprioception, P privileged state. Succ.: mean over draws;} \\
-\multicolumn{6}{l}{\scriptsize half of the 500 episodes use training initial states. Undist.: one draw, with} \\
-\multicolumn{6}{l}{\scriptsize the base row's sampling-noise seed (base over three draws: 95.1).}
+\multicolumn{7}{l}{\scriptsize Held out: 250 episodes, other columns 500. Bold: 95\% interval excludes zero.} \\
+\multicolumn{7}{l}{\scriptsize In.: V vision + proprioception, P privileged state. $^{\mathrm{a}}$Pre-registered test.} \\
+\multicolumn{7}{l}{\scriptsize Draws: base 3--7, methods 2--5; Undist.: one each, base seed (base, 3 draws: 95.1).}
 \end{tabular}
 \end{table}
 
 \subsection{Other Disturbances and Side Effects}
-The student and detector were trained only on 4--6\,cm displacements, mostly during the approach (the regressor on 2\nobreakdash--10\,cm); Fig.~\ref{fig:general} evaluates them unchanged on other disturbances (all 500 episodes). With 8--12\,cm displacements, where the base policy falls to 37.0\% (three draws), the student gains $+8.3$ [$+5.0$, $+11.5$] and the privileged teacher $+12.1$ (two draws each), while the fixed-rule shift gains only $+3.8$ (three draws). The student is $+4.5$ [$+1.5$, $+7.5$] above it ($+4.2$ above the selected rule, two draws). Beyond the regressor's 10\,cm training range the student still gains $+8.0$ [$+3.7$, $+12.4$] ($+7.7$ [$+1.9$, $+13.6$] on held-out initial states). On the other disturbances the student is neutral: for a late move of the nearest free object
+The student and detector were trained only on 4--6\,cm displacements, mostly during the approach (the regressor on 2\nobreakdash--10\,cm); Fig.~\ref{fig:general} evaluates them unchanged on other disturbances (all 500 episodes). With 8--12\,cm displacements, where the base policy falls to 37.0\%, the student gains $+8.3$ [$+5.0$, $+11.5$], $+4.5$ [$+1.5$, $+7.5$] more than the fixed-rule shift ($+4.2$ more than the selected rule). Beyond the regressor's 10\,cm training range the student still gains $+8.0$ [$+3.7$, $+12.4$] ($+7.7$ [$+1.9$, $+13.6$] on held-out initial states). On the other disturbances the student is neutral: for a late move of the nearest free object
 (steps 110--210) the detector fires in half of the episodes and the student's gain is within noise ($+1.4$), whereas the privileged teacher is slightly harmful ($-2.4$ [$-4.2$, $-0.5$], two draws each); for sliding (6--10\,cm planned, cut short when the gripper closes, so slides differ by method) and a five-step arm push, the detector, trained on teleports, rarely fires (6--12\%) and success
 changes by at most 1.1 points. Undisturbed success is 95.2--95.6\% in every detector-gated variant on states 0--49: the detector gate bounds how often a residual can act, whereas the scripted shift's cumulative gate costs 4.6 points (90.8\%).
 
