@@ -9,7 +9,7 @@ Accepted version of **When to Replan and How Much to Correct: Residual Reinforce
 Recovery in Vision-Language-Action Policies** (Chang-Hoon Ji and Tae-Eui Kam, Korea University), accepted at
 ICEIC 2027 (IEEE Publication Track).
 
-**[ji2027replan.pdf](ji2027replan.pdf)** is the accepted version (6 pages; text as of 2026-11-23) with an acceptance line
+**[ji2027replan.pdf](ji2027replan.pdf)** is the accepted version (6 pages; text as of 2026-11-24) with an acceptance line
 and the notice above added in the top margin of page 1; the text is otherwise identical to `main_iceic_residual.tex`.
 The DOI will be added here once the paper is in IEEE Xplore.
 
