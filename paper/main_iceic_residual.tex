@@ -49,7 +49,7 @@ kamte@korea.ac.kr}
 % No footnotes in the abstract; pi_0.5 is typeset as bold math (the abstract is bold) by the authors' choice
 % (the IEEE template asks for none; the EDAS abstract field keeps plain 'pi0.5').
 \begin{abstract}
-Vision-language-action policies that predict action chunks execute them open loop, so after an object is suddenly displaced, the robot follows a plan made for the old scene. On LIBERO\nobreakdash-10, teleporting the target object by 4 to 6\,cm, mostly as the gripper approaches, cuts the success of {\boldmath$\pi_{0.5}$} from 95 to 65 percent. Fixed inference-time settings (replan frequency, integration steps, chunk selection) recover little. More computation at the next scheduled query recovers nothing measurable; replanning when a learned camera-frame detector fires adds no policy queries per episode and recovers zero to three points. When to replan matters less than how much to correct: a fixed-rule shift toward the estimated displacement gains about six points. Our event-gated residual is cloned from a scripted shift given the true displacement, refined with reinforcement learning as lightweight post-training and distilled into a vision-only student. In a pre-registered test on 500 fresh initial states, it raises success from 65.4 to 73.7 percent (paired gain 8.4 points, 95 percent interval 5.6 to 11.2; 2.9 over the fixed-rule shift) without measurably changing undisturbed success.
+Vision-language-action policies that predict action chunks execute them open loop, so after an object is suddenly displaced, the robot follows a plan made for the old scene. On LIBERO\nobreakdash-10, teleporting the target object by 4 to 6\,cm, mostly as the gripper approaches, cuts the success of {\boldmath$\pi_{0.5}$} from 95 to 65 percent. Fixed inference-time settings for replan frequency, integration steps and chunk selection recover little. More computation at the next scheduled query recovers nothing measurable; replanning when a learned camera-frame detector fires adds no policy queries per episode and recovers zero to three points. When to replan matters less than how much to correct: a fixed-rule shift toward the estimated displacement gains about six points. Our event-gated residual is cloned from a scripted shift given the true displacement, refined with reinforcement learning as lightweight post-training and distilled into a vision-only student. In a pre-registered test on 500 fresh initial states, it raises success from 65.4 to 73.7 percent, a paired gain of 8.4 points, 95 percent interval 5.6 to 11.2. It beats the fixed-rule shift by 2.9 and does not measurably change undisturbed success.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -61,7 +61,7 @@ post-training, residual reinforcement learning, vision-language-action models
 \section{Introduction}
 % =====================================================================
 
-Vision-language-action (VLA) models have become a standard recipe for
+Vision-language-action (VLA) models have become a common approach to
 language-conditioned manipulation~\cite{kim2024openvla,black2024pi0,pi05}.
 Most now predict \emph{action chunks}~\cite{zhao2023act,chi2025diffusion}:
 one query of the model yields $H$ actions, of which the robot
