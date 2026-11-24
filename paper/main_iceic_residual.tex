@@ -73,17 +73,17 @@ rarely contains.
 
 \input{fig_overview_res}
 
-How large is this cost, and what recovers it? We study the question with the
-official $\pi_{0.5}$ checkpoint for LIBERO~\cite{pi05,liu2023libero} under
+How much success is lost, and what recovers it? We study both questions with the
+released $\pi_{0.5}$ checkpoint for LIBERO~\cite{pi05,liu2023libero} under
 a controlled disturbance: a target object is teleported 4\nobreakdash--6\,cm horizontally, mostly when the open gripper first comes within 12\,cm of it.
 Success on LIBERO-10 drops from 95.4\% to 64.7\%. Tracking the object
-(Section~\ref{sec:diag}) shows that the policy often first closes the gripper nearer the \emph{old} position and that failures time out regrasping.
+(Section~\ref{sec:diag}) shows that the policy often first closes the gripper nearer the \emph{old} position and that failures run out of time while regrasping.
 
 Recent work offers several remedies but rarely compares them under the same disturbance. Adaptive-inference methods decide
 when to replan, how much to compute per query or which sampled chunk to keep~\cite{liang2026aac,pan2026corrector,chun2025dasip,liu2025bid}; runtime
 monitors detect execution failures~\cite{agia2024sentinel,xu2025faildetect,gu2025safe};
 and residual reinforcement learning (RL) methods learn corrections on top of a fixed policy~\cite{yuan2025decorator,xiao2025pld}.
-A concurrent benchmark of mid-execution changes such as target relocation finds that varying the replan frequency does not close the gap for four of its 14 policies, including $\pi_{0.5}$, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test both under one protocol, along with fixed settings of the inference levers. Replanning at the event helps little, and the new chunk seems to retarget the moved object only partly. Correcting the actions recovers more: about six of the 31 lost points with a fixed-rule shift and eight to ten with an event-gated residual policy learned as post-training around the VLA (Fig.~\ref{fig:overview}; Table~\ref{tab:rec}).
+A concurrent benchmark of mid-execution changes such as target relocation finds that varying the replan frequency does not close the gap for four of its 14 policies, including $\pi_{0.5}$, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test both under one protocol, along with fixed settings of the inference levers. Replanning at the event helps little, and the new chunk seems to retarget the moved object only partly. Correcting the actions recovers more: about six of the 31 lost points with a fixed-rule shift and eight to ten on unseen initial states with an event-gated residual policy learned as post-training around the VLA (Fig.~\ref{fig:overview}; Table~\ref{tab:rec}).
 
 Our contributions are:
 \begin{itemize}
@@ -96,7 +96,7 @@ Our contributions are:
   \item an event-gated residual recovery policy that beats a fixed-rule shift by 2.9 points in a pre-registered
         test on fresh initial states, still gains with displacements twice as large and does not measurably change
         undisturbed success: as post-training around the VLA, we train a privileged teacher
-        by behavior cloning (BC) of a scripted shift and then by proximal policy optimization (PPO), and distill it into a vision-only student gated by a learned per-step detector that detects 87--90\% of displacements on held-out
+        by behavior cloning (BC) of a scripted shift and then by proximal policy optimization (PPO), and distill it into a vision-only student gated by a learned per-step detector that flags 87--90\% of displacements on held-out
         initial states within three control steps.\footnote{Code, trained modules and per-episode results:\newline \url{https://github.com/BitAdventurer/VLA-Disturbance-Recovery}}
 \end{itemize}
 
@@ -301,7 +301,7 @@ Gains concentrate where the approach triggers the event. Held out, the student g
 \section{Conclusion}
 % =====================================================================
 
-After the target object is displaced, $\pi_{0.5}$ loses 31 points, and its failures time out regrasping. When to replan matters less than how much to correct: replanning at the detected event recovers zero to three points, a
+After the target object is displaced, $\pi_{0.5}$ loses 31 points, and its failures run out of time while regrasping. When to replan matters less than how much to correct: replanning at the detected event recovers zero to three points, a
 fixed-rule shift about six and, on fresh initial states, the event-gated residual student about eight. Gating keeps our post-training conservative: undisturbed success does not measurably change, whereas a loosely gated teacher cut it to 73.6\%. We test only one policy, benchmark and task set, mostly with single training runs. Needing no object state and little CPU time, the modules could run beside a robot's VLA, like \mbox{TRANSIC}'s residual beside a simulation-trained policy~\cite{jiang2024transic}. Open sim-to-real gaps are rendered training frames, teleported rather than physical displacements, and synchronous execution; next, we will probe them on hardware, make the correction track the displacement and try an end-to-end, possibly multi-agent gate~\cite{shin2024mars}.
 
 \bibliographystyle{IEEEtran}
