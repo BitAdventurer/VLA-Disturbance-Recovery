@@ -110,7 +110,7 @@ chunks~\cite{liang2026aac}, and DVAC replans before the high-variance
 actions of a chunk~\cite{feng2026dvac}. Bidirectional decoding selects among chunks
 resampled at every step~\cite{liu2025bid}, RTC inpaints the next chunk
 while the current one executes~\cite{black2025rtc}, and DA-SIP chooses the number of integration
-steps per query with a difficulty classifier~\cite{chun2025dasip}. All five balance reactivity, consistency and compute but detect no events. VLA-Corrector~\cite{pan2026corrector} does: it truncates the chunk when visual latents drift from a learned prediction and replans with gradient guidance, but tests displacement only on hardware and adds no correction policy.
+steps per query with a difficulty classifier~\cite{chun2025dasip}. All five balance reactivity, consistency and computation but detect no external events. VLA-Corrector~\cite{pan2026corrector} does: it truncates the chunk when visual latents drift from a learned prediction and replans with gradient guidance, but tests displacement only on hardware and adds no correction policy.
 
 \noindent\textbf{Runtime monitoring.}
 To flag failures or halt the policy, Sentinel~\cite{agia2024sentinel} checks action consistency and task progress, FAIL-Detect~\cite{xu2025faildetect} runs sequential out-of-distribution tests and SAFE~\cite{gu2025safe} probes VLA features. Like VLA-Corrector, we use detection to \emph{act}, here on one external event.
@@ -121,9 +121,9 @@ frozen $\pi_0$, with the corrections then distilled into the VLA~\cite{xiao2025p
 RL~\cite{chen2025conrft,guo2025irevla} or with offline RL to recover from errors~\cite{gao2026ogpo}. Online RL has been shown to help when an
 object is moved mid-episode~\cite{liu2025rl4vla}. A training-free operator offsets and
 compresses a chunk toward perceived motion~\cite{zhang2026pacepath}, the
-closest analog of our fixed-rule shift; teleports are its stated weak case. \mbox{TRANSIC} gates a residual with a classifier learned from human interventions~\cite{jiang2024transic}; ours is zero except after a detected scene displacement,
+closest analog of our fixed-rule shift; teleported objects are its stated weak case. \mbox{TRANSIC} gates a residual with a classifier learned from human interventions~\cite{jiang2024transic}; ours is zero except after a detected scene displacement,
 distilled from a privileged teacher into a vision-only student as
-in~\cite{ankile2024resip}, and compared with a fixed-rule shift.
+in~\cite{ankile2024resip}; we compare it with a fixed-rule shift.
 
 % =====================================================================
 \section{Setting and Diagnosis}\label{sec:diag}
