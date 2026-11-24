@@ -79,10 +79,10 @@ a controlled disturbance: a target object is teleported 4\nobreakdash--6\,cm hor
 Success on LIBERO-10 drops from 95.4\% to 64.7\%. Tracking the object
 (Section~\ref{sec:diag}) shows that the policy often first closes the gripper nearer the \emph{old} position and that failures time out regrasping.
 
-Recent work offers several responses, rarely compared under one disturbance. Adaptive-inference methods decide
+Recent work offers several remedies but rarely compares them under the same disturbance. Adaptive-inference methods decide
 when to replan, how much to compute per query or which sampled chunk to keep~\cite{liang2026aac,pan2026corrector,chun2025dasip,liu2025bid}; runtime
 monitors detect execution failures~\cite{agia2024sentinel,xu2025faildetect,gu2025safe};
-and residual reinforcement learning (RL) learns corrections on top of a fixed policy~\cite{yuan2025decorator,xiao2025pld}.
+and residual reinforcement learning (RL) methods learn corrections on top of a fixed policy~\cite{yuan2025decorator,xiao2025pld}.
 A concurrent benchmark of mid-execution changes such as target relocation finds that varying the replan frequency does not close the gap for four of its 14 policies, including $\pi_{0.5}$, but tests no event-triggered replanning or action correction~\cite{zhang2026liberomax}. We test both under one protocol, along with fixed settings of the inference levers. Replanning at the event helps little, and the new chunk seems to retarget the moved object only partly. Correcting the actions recovers more: about six of the 31 lost points with a fixed-rule shift and eight to ten with an event-gated residual policy learned as post-training around the VLA (Fig.~\ref{fig:overview}; Table~\ref{tab:rec}).
 
 Our contributions are:
